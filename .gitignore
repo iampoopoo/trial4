@@ -10,3 +10,8 @@
 
 # Logs #
 *.log*
+
+# Artifacts #
+## dotnet ##
+bin/
+obj/
