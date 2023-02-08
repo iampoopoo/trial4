@@ -37,7 +37,7 @@ jobs:
           script: |
             const fs = require('fs');
             const path = require('path');
-            const { data: { id: check_run_id } } = await github.checks.create({
+            const { data: { id: check_run_id } } = await github.rest.checks.create({
               owner,
               repo,
               name: 'Lint',
@@ -62,7 +62,7 @@ jobs:
                 };
               });
             });
-            await github.checks.update({
+            await github.rest.checks.update({
               owner,
               repo,
               check_run_id,
