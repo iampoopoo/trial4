@@ -41,7 +41,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               name: 'Lint',
-              head_sha: sha,
+              head_sha: context.sha,
               status: 'in_progress',
               started_at: new Date().toISOString(),
             });
