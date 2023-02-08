@@ -5,6 +5,8 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glekcraft", "Glekcraft\Glekcraft.csproj", "{3FB7D04C-599B-4FD0-AF70-9E6A4057CDAE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glekcraft.GLFW", "GLFW\Glekcraft.GLFW.csproj", "{66436C42-CE82-4FF3-BE5B-8C12EB28BC61}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -18,5 +20,9 @@ Global
 		{3FB7D04C-599B-4FD0-AF70-9E6A4057CDAE}.Debug|x64.Build.0 = Debug|x64
 		{3FB7D04C-599B-4FD0-AF70-9E6A4057CDAE}.Release|x64.ActiveCfg = Release|x64
 		{3FB7D04C-599B-4FD0-AF70-9E6A4057CDAE}.Release|x64.Build.0 = Release|x64
+		{66436C42-CE82-4FF3-BE5B-8C12EB28BC61}.Debug|x64.ActiveCfg = Debug|x64
+		{66436C42-CE82-4FF3-BE5B-8C12EB28BC61}.Debug|x64.Build.0 = Debug|x64
+		{66436C42-CE82-4FF3-BE5B-8C12EB28BC61}.Release|x64.ActiveCfg = Release|x64
+		{66436C42-CE82-4FF3-BE5B-8C12EB28BC61}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 EndGlobal
