@@ -20,6 +20,11 @@ jobs:
         with:
           submodules: true
           lfs: true
+      - id: setup-dotnet
+        name: Setup dotnet
+        uses: actions/setup-dotnet@v3
+        with:
+          version: 7.x
       - id: lint
         name: Lint
         continue-on-error: true
