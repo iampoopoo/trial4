@@ -38,8 +38,8 @@ jobs:
             const fs = require('fs');
             const path = require('path');
             const { data: { id: check_run_id } } = await github.rest.checks.create({
-              owner,
-              repo,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
               name: 'Lint',
               head_sha: sha,
               status: 'in_progress',
@@ -63,8 +63,8 @@ jobs:
               });
             });
             await github.rest.checks.update({
-              owner,
-              repo,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
               check_run_id,
               status: 'completed',
               conclusion: annotations.length > 0 ? 'failure' : 'success',
