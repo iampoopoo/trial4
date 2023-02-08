@@ -46,7 +46,7 @@ jobs:
               started_at: new Date().toISOString(),
             });
             const report = fs.readFileSync('format-report.json', 'UTF-8');
-            const { files } = JSON.parse(report);
+            const files = JSON.parse(report);
             const annotations = files.flatMap(file => {
               const { file: FileName, diagnostics: FileChanges } = file;
               return diagnostics.map(diagnostic => {
