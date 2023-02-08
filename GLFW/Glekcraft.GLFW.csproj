@@ -13,4 +13,13 @@
     <ItemGroup>
         <Using Include="System" />
     </ItemGroup>
+    <Import Condition="Exists('$(MSBuildThisFileDirectory)../UserNatives.props') == 'true' AND $(UserNativesProps) == ''" Project="$(MSBuildThisFileDirectory)../UserNatives.props" />
+    <Import Condition="Exists('$(MSBuildThisFileDirectory)../Natives.props') == 'true' AND $(NativesProps) == ''" Project="$(MSBuildThisFileDirectory)../Natives.props" />
+    <ItemGroup>
+        <Content Include="$(MSBuildThisFileDirectory)native/$(Natives_TargetRuntimeIdentifier)/$(Natives_TargetRuntimeLibraryPrefix)glfw$(Natives_TargetRuntimeLibrarySuffix)$(Natives_TargetRuntimeLibraryExtension)">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+            <Visible>false</Visible>
+            <Link>$(Natives_TargetRuntimeLibraryPrefix)glfw$(Natives_TargetRuntimeLibrarySuffix)$(Natives_TargetRuntimeLibraryExtension)</Link>
+        </Content>
+    </ItemGroup>
 </Project>

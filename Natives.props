@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="https://github.com/dotnet/msbuild/raw/main/src/MSBuild/MSBuild/Microsoft.Build.Core.xsd" type="application/xml" schematypens="http://schemas.microsoft.com/developer/msbuild/2003"?>
+<Project>
+    <PropertyGroup Label="Host Platform">
+        <!-- Determine host platform operating system -->
+        <Natives_HostOS Condition="$([MSBuild]::IsOSPlatform('Windows')) == 'true'">Windows</Natives_HostOS>
+        <Natives_HostOS Condition="$([MSBuild]::IsOSPlatform('Linux')) == 'true'">Linux</Natives_HostOS>
+        <Natives_HostOS Condition="$([MSBuild]::IsOSPlatform('OSX')) == 'true'">MacOS</Natives_HostOS>
+        <!-- Determine host platform processor architecture -->
+        <Natives_HostProcessorArchitecture Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture)' == 'X64'">x64</Natives_HostProcessorArchitecture>
+        <Natives_HostProcessorArchitecture Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture)' == 'X86'">x86</Natives_HostProcessorArchitecture>
+        <!-- Set host native runtime identifier -->
+        <Natives_HostRuntimeIdentifier Condition="'$(Natives_HostOS)' == 'Windows'">win-$(Natives_HostProcessorArchitecture)</Natives_HostRuntimeIdentifier>
+        <Natives_HostRuntimeIdentifier Condition="'$(Natives_HostOS)' == 'Linux'">linux-$(Natives_HostProcessorArchitecture)</Natives_HostRuntimeIdentifier>
+        <Natives_HostRuntimeIdentifier Condition="'$(Natives_HostOS)' == 'MacOS'">macos-$(Natives_HostProcessorArchitecture)</Natives_HostRuntimeIdentifier>
+    </PropertyGroup>
+    <PropertyGroup Label="Target Platform">
+        <!-- Set target platform operating system (defaults to host operating system) -->
+        <Natives_TargetOS Condition="'$(Natives_TargetOS)' == ''">$(Natives_HostOS)</Natives_TargetOS>
+        <!-- Set target platform processor architecture (defaults to host processor architecture) -->
+        <Natives_TargetProcessorArchitecture Condition="'$(Natives_TargetProcessorArchitecture)' == ''">$(Natives_HostProcessorArchitecture)</Natives_TargetProcessorArchitecture>
+        <!-- Derive target native runtime identifier -->
+        <Natives_TargetRuntimeIdentifier Condition="'$(Natives_TargetOS)' == 'Windows'">win-$(Natives_TargetProcessorArchitecture)</Natives_TargetRuntimeIdentifier>
+        <Natives_TargetRuntimeIdentifier Condition="'$(Natives_TargetOS)' == 'Linux'">linux-$(Natives_TargetProcessorArchitecture)</Natives_TargetRuntimeIdentifier>
+        <Natives_TargetRuntimeIdentifier Condition="'$(Natives_TargetOS)' == 'MacOS'">macos-$(Natives_TargetProcessorArchitecture)</Natives_TargetRuntimeIdentifier>
+        <!-- Derive target native runtime library prefix -->
+        <Natives_TargetRuntimeLibraryPrefix Condition="'$(Natives_TargetOS)' == 'Windows'"></Natives_TargetRuntimeLibraryPrefix>
+        <Natives_TargetRuntimeLibraryPrefix Condition="'$(Natives_TargetOS)' == 'Linux'">lib</Natives_TargetRuntimeLibraryPrefix>
+        <Natives_TargetRuntimeLibraryPrefix Condition="'$(Natives_TargetOS)' == 'MacOS'">lib</Natives_TargetRuntimeLibraryPrefix>
+        <!-- Derive target native runtime library suffix -->
+        <Natives_TargetRuntimeLibrarySuffix Condition="'$(Natives_TargetOS)' == 'Windows'"></Natives_TargetRuntimeLibrarySuffix>
+        <Natives_TargetRuntimeLibrarySuffix Condition="'$(Natives_TargetOS)' == 'Linux'"></Natives_TargetRuntimeLibrarySuffix>
+        <Natives_TargetRuntimeLibrarySuffix Condition="'$(Natives_TargetOS)' == 'MacOS'"></Natives_TargetRuntimeLibrarySuffix>
+        <!-- Derive target native runtime library extension -->
+        <Natives_TargetRuntimeLibraryExtension Condition="'$(Natives_TargetOS)' == 'Windows'">.dll</Natives_TargetRuntimeLibraryExtension>
+        <Natives_TargetRuntimeLibraryExtension Condition="'$(Natives_TargetOS)' == 'Linux'">.so</Natives_TargetRuntimeLibraryExtension>
+        <Natives_TargetRuntimeLibraryExtension Condition="'$(Natives_TargetOS)' == 'MacOS'">.dylib</Natives_TargetRuntimeLibraryExtension>
+    </PropertyGroup>
+</Project>
