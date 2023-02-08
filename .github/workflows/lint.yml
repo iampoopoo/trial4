@@ -45,7 +45,7 @@ jobs:
               status: 'in_progress',
               started_at: new Date().toISOString(),
             });
-            const report = fs.readFileSync(path.join(__dirname, 'format-report.json'), 'utf8');
+            const report = fs.readFileSync('format-report.json', 'UTF-8');
             const { files } = JSON.parse(report);
             const annotations = files.flatMap(file => {
               const { file: FileName, diagnostics: FileChanges } = file;
