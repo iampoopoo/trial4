@@ -1,0 +1,75 @@
+name: Lint
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      checks: write
+    steps:
+      - id: checkout
+        name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+          lfs: true
+      - id: lint
+        name: Lint
+        continue-on-error: true
+        run: |
+          dotnet format --verify-no-changes --report format-report.json
+      - id: annotate
+        name: Annotate
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            const { data: { id: check_run_id } } = await github.checks.create({
+              owner,
+              repo,
+              name: 'Lint',
+              head_sha: sha,
+              status: 'in_progress',
+              started_at: new Date().toISOString(),
+            });
+            const report = fs.readFileSync(path.join(__dirname, 'format-report.json'), 'utf8');
+            const { files } = JSON.parse(report);
+            const annotations = files.flatMap(file => {
+              const { file: FileName, diagnostics: FileChanges } = file;
+              return diagnostics.map(diagnostic => {
+                const { line: LineNumber, column: CharNumber, message: FormatDescription } = diagnostic;
+                return {
+                  path: filename,
+                  start_line: line,
+                  end_line: line,
+                  start_column: column,
+                  end_column: column,
+                  annotation_level: 'failure',
+                  message,
+                };
+              });
+            });
+            await github.checks.update({
+              owner,
+              repo,
+              check_run_id,
+              status: 'completed',
+              conclusion: annotations.length > 0 ? 'failure' : 'success',
+              completed_at: new Date().toISOString(),
+              output: {
+                title: 'Lint',
+                summary: annotations.length > 0 ? 'Lint failed' : 'Lint passed',
+                annotations,
+              },
+            });
+            if (annotations.length > 0) {
+              core.setFailed('Lint failed');
+            }
