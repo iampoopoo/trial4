@@ -1,0 +1,44 @@
+name: CodeQL
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  schedule:
+    - cron: "41 2 * * 4"
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    strategy:
+      fail-fast: false
+      matrix:
+        language:
+          - csharp
+    steps:
+      - id: checkout
+        name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+          lfs: true
+      - id: init-codeql
+        name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
+        with:
+          languages: ${{matrix.language}}
+          queries: security-and-quality
+      - id: autobuild
+        name: Autobuild
+        uses: github/codeql-action/autobuild@v2
+      - id: perform-analysis
+        name: Perform analysis
+        uses: github/codeql-action/analyze@v2
+        with:
+          category: /language:${{matrix.language}}
