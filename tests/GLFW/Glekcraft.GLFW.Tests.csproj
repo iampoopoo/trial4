@@ -13,6 +13,7 @@
     </PropertyGroup>
     <ItemGroup>
         <Using Include="System" />
+        <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="../../GLFW/Glekcraft.GLFW.csproj" />
