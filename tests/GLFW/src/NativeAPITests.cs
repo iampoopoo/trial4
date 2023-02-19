@@ -3,10 +3,16 @@ namespace Glekcraft.GLFW.Tests;
 [TestClass]
 public class NativeAPITests {
     [TestMethod]
-    public void TestGetVersion() {
-        NativeAPIs.glfwGetVersion(out var major, out var minor, out var rev);
-        major.Should().BeGreaterThanOrEqualTo(3);
-        minor.Should().BeGreaterThanOrEqualTo(0);
-        rev.Should().BeGreaterThanOrEqualTo(0);
+    public void TestGetVersion() =>
+        NativeAPIs.GetVersion().Should().BeGreaterThanOrEqualTo(new(3, 0, 0));
+
+    [TestMethod]
+    public void TestGetVersionString() =>
+        NativeAPIs.GetVersionString().Should().NotBeNullOrWhiteSpace().And.MatchRegex(@"3\.\d+\.\d+");
+
+    [TestMethod]
+    public void TestTryGetVersionString() {
+        NativeAPIs.TryGetVersionString(out var version).Should().BeTrue();
+        version.Should().NotBeNullOrWhiteSpace().And.MatchRegex(@"3\.\d+\.\d+");
     }
 }
