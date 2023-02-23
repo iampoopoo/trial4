@@ -15,3 +15,4 @@
 ## dotnet ##
 bin/
 obj/
+dist/
