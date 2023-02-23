@@ -2,9 +2,10 @@
 <?xml-model href="https://github.com/dotnet/msbuild/raw/main/src/MSBuild/MSBuild/Microsoft.Build.Core.xsd" type="application/xml" schematypens="http://schemas.microsoft.com/developer/msbuild/2003"?>
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
         <RootNamespace>Glekcraft.GLFW</RootNamespace>
         <TargetFramework>net7.0</TargetFramework>
+        <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+        <RuntimeIdentifiers>win-x64;linux-x64</RuntimeIdentifiers>
         <ImplicitUsings>disable</ImplicitUsings>
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
@@ -13,4 +14,20 @@
     <ItemGroup>
         <Using Include="System" />
     </ItemGroup>
+    <Target Name="UpdateFilesToCopy" BeforeTargets="$(GetCopyToOutputDirectoryItemsDependsOn)">
+        <PropertyGroup>
+            <NativeLibraryPath Condition="$(NativeLibraryPath) == ''">$(MSBuildThisFileDirectory)runtime/$([System.Runtime.InteropServices.RuntimeInformation]::RuntimeIdentifier.Replace('win10', 'win'))</NativeLibraryPath>
+            <NativeLibraryName Condition="$([System.Runtime.InteropServices.RuntimeInformation]::RuntimeIdentifier.StartsWith('win'))">glfw.dll</NativeLibraryName>
+            <NativeLibraryName Condition="$([System.Runtime.InteropServices.RuntimeInformation]::RuntimeIdentifier.StartsWith('linux'))">libglfw.so</NativeLibraryName>
+            <NativeLibraryName Condition="$([System.Runtime.InteropServices.RuntimeInformation]::RuntimeIdentifier.StartsWith('osx'))">libglfw.dylib</NativeLibraryName>
+        </PropertyGroup>
+        <ItemGroup>
+            <Content Include="$(NativeLibraryPath)/$(NativeLibraryName)">
+                <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+                <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+                <Visible>false</Visible>
+                <Link>$(NativeLibraryName)</Link>
+            </Content>
+        </ItemGroup>
+    </Target>
 </Project>

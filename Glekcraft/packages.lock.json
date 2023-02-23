@@ -193,26 +193,6 @@
         "resolved": "2.0.14.1",
         "contentHash": "pqhYzaFfEXGCZag7JsO3YoNHYALBqFHu4a3Ejyz5rjPW51p3Tfjs82Cz8n9GkohzJADZxSRthNYWpa3Hi1Vp6g=="
       }
-    },
-    "net7.0/win-x64": {
-      "System.Text.Encodings.Web": {
-        "type": "Transitive",
-        "resolved": "6.0.0",
-        "contentHash": "Vg8eB5Tawm1IFqj4TVK1czJX89rhFxJo9ELqc/Eiq0eXy13RK00eubyU6TJE6y+GQXjyV5gSfiewDUZjQgSE0w==",
-        "dependencies": {
-          "System.Runtime.CompilerServices.Unsafe": "6.0.0"
-        }
-      },
-      "Ultz.Native.GLFW": {
-        "type": "Transitive",
-        "resolved": "3.3.3.1",
-        "contentHash": "7eUNO/A1+BXZt0HF1i67HByjmQFo/FfdFatdHUlupv1qnu5tKr5RLreZ7O1Fr0oRIcW6kEx7kJY0aPfJBwcJAw=="
-      },
-      "Ultz.Native.SDL": {
-        "type": "Transitive",
-        "resolved": "2.0.14.1",
-        "contentHash": "pqhYzaFfEXGCZag7JsO3YoNHYALBqFHu4a3Ejyz5rjPW51p3Tfjs82Cz8n9GkohzJADZxSRthNYWpa3Hi1Vp6g=="
-      }
     }
   }
 }
