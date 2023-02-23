@@ -1,28 +1,28 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glekcraft", "Glekcraft\Glekcraft.csproj", "{3FB7D04C-599B-4FD0-AF70-9E6A4057CDAE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glekcraft", "Glekcraft\Glekcraft.csproj", "{B48E0AE2-7A9C-4569-888E-21F48AE7E241}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glekcraft.GLFW", "GLFW\Glekcraft.GLFW.csproj", "{B4407C06-AEE2-43F6-9A17-E8F01E7CE53C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|x64 = Debug|x64
-		Release|x64 = Release|x64
-		Debug|x86 = Debug|x86
-		Release|x86 = Release|x86
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{3FB7D04C-599B-4FD0-AF70-9E6A4057CDAE}.Debug|x64.ActiveCfg = Debug|x64
-		{3FB7D04C-599B-4FD0-AF70-9E6A4057CDAE}.Debug|x64.Build.0 = Debug|x64
-		{3FB7D04C-599B-4FD0-AF70-9E6A4057CDAE}.Release|x64.ActiveCfg = Release|x64
-		{3FB7D04C-599B-4FD0-AF70-9E6A4057CDAE}.Release|x64.Build.0 = Release|x64
-		{3FB7D04C-599B-4FD0-AF70-9E6A4057CDAE}.Debug|x86.ActiveCfg = Debug|x86
-		{3FB7D04C-599B-4FD0-AF70-9E6A4057CDAE}.Debug|x86.Build.0 = Debug|x86
-		{3FB7D04C-599B-4FD0-AF70-9E6A4057CDAE}.Release|x86.ActiveCfg = Release|x86
-		{3FB7D04C-599B-4FD0-AF70-9E6A4057CDAE}.Release|x86.Build.0 = Release|x86
+		{B48E0AE2-7A9C-4569-888E-21F48AE7E241}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B48E0AE2-7A9C-4569-888E-21F48AE7E241}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B48E0AE2-7A9C-4569-888E-21F48AE7E241}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B48E0AE2-7A9C-4569-888E-21F48AE7E241}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4407C06-AEE2-43F6-9A17-E8F01E7CE53C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4407C06-AEE2-43F6-9A17-E8F01E7CE53C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4407C06-AEE2-43F6-9A17-E8F01E7CE53C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4407C06-AEE2-43F6-9A17-E8F01E7CE53C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
