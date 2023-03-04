@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glekcraft", "Glekcraft\Glek
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glekcraft.GLFW", "GLFW\Glekcraft.GLFW.csproj", "{B4407C06-AEE2-43F6-9A17-E8F01E7CE53C}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{CE685BED-2F2B-4B2F-B898-5305C2F07933}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glekcraft.GLFW.Tests", "tests\GLFW\Glekcraft.GLFW.Tests.csproj", "{1296D06C-BD60-4589-A978-FF90626875D4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +28,12 @@ Global
 		{B4407C06-AEE2-43F6-9A17-E8F01E7CE53C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B4407C06-AEE2-43F6-9A17-E8F01E7CE53C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B4407C06-AEE2-43F6-9A17-E8F01E7CE53C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1296D06C-BD60-4589-A978-FF90626875D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1296D06C-BD60-4589-A978-FF90626875D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1296D06C-BD60-4589-A978-FF90626875D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1296D06C-BD60-4589-A978-FF90626875D4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1296D06C-BD60-4589-A978-FF90626875D4} = {CE685BED-2F2B-4B2F-B898-5305C2F07933}
 	EndGlobalSection
 EndGlobal
