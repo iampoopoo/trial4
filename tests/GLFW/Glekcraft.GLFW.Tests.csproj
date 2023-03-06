@@ -10,10 +10,12 @@
         <LangVersion>latest</LangVersion>
         <IsPackable>false</IsPackable>
         <Nullable>enable</Nullable>
-        <NoWarn>IDE0130</NoWarn>
+        <NoWarn>IDE0130;IDE0058</NoWarn>
     </PropertyGroup>
     <ItemGroup>
         <Using Include="System" />
+        <Using Include="FluentAssertions" />
+        <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="../../GLFW/Glekcraft.GLFW.csproj" />
