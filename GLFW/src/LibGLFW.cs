@@ -5,11 +5,17 @@ using System.Runtime.InteropServices;
 public sealed class LibGLFW : IDisposable {
     #region Private Static Fields
 
-    private static LibGLFW? s_instance;
+    internal static LibGLFW? s_instance;
 
     #endregion
 
     #region Public Static Methods
+
+    public static Version NativeVersion =>
+        NativeAPIs.GetVersion();
+
+    public static string? NativeVersionString =>
+        NativeAPIs.GetVersionString();
 
     public static int? LastErrorCode {
         get;
