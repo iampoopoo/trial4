@@ -1,0 +1,90 @@
+name: dotnet
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+jobs:
+  build:
+    name: Build
+    runs-on: ${{matrix.os}}
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: true
+      matrix:
+        os:
+          - windows-latest
+          - ubuntu-latest
+          - macos-latest
+    steps:
+      - id: checkout
+        name: Checkout
+        uses: actions/checkout@v3
+        with:
+          lfs: true
+          submodules: true
+      - id: setup-dotnet
+        name: Setup dotnet
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 7.x
+      - id: cache
+        name: Cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.nuget/packages
+          key: ${{runner.os}}-nuget-${{hashFiles('**/packages.lock.json')}}
+          restore-keys: |
+            ${{runner.os}}-nuget-
+      - id: restore
+        name: Restore
+        run: dotnet restore
+      - id: build
+        name: Build
+        run: dotnet build --no-restore
+  test:
+    name: Test
+    runs-on: ${{matrix.os}}
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: true
+      matrix:
+        os:
+          - windows-latest
+          - ubuntu-latest
+          - macos-latest
+    steps:
+      - id: checkout
+        name: Checkout
+        uses: actions/checkout@v3
+        with:
+          lfs: true
+          submodules: true
+      - id: setup-dotnet
+        name: Setup dotnet
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 7.x
+      - id: cache
+        name: Cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.nuget/packages
+          key: ${{runner.os}}-nuget-${{hashFiles('**/packages.lock.json')}}
+          restore-keys: |
+            ${{runner.os}}-nuget-
+      - id: restore
+        name: Restore
+        run: dotnet restore
+      - id: build
+        name: Build
+        run: dotnet build --no-restore
+      - id: test
+        name: Test
+        run: dotnet test --no-build
