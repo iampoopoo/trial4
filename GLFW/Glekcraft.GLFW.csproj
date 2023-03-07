@@ -17,7 +17,13 @@
     </ItemGroup>
     <Target Name="UpdateFilesToCopy" BeforeTargets="$(GetCopyToOutputDirectoryItemsDependsOn)">
         <PropertyGroup>
-            <NativeLibraryPath Condition="$(NativeLibraryPath) == ''">$(MSBuildThisFileDirectory)runtime/$([System.Runtime.InteropServices.RuntimeInformation]::RuntimeIdentifier.Replace('win10', 'win'))</NativeLibraryPath>
+            <NativeLibraryOS Condition="$(NativeLibraryOS) == '' AND $([MSBuild]::IsOSPlatform('Windows'))">win</NativeLibraryOS>
+            <NativeLibraryOS Condition="$(NativeLibraryOS) == '' AND $([MSBuild]::IsOSPlatform('Linux'))">linux</NativeLibraryOS>
+            <NativeLibraryOS Condition="$(NativeLibraryOS) == '' AND $([MSBuild]::IsOSPlatform('OSX'))">osx</NativeLibraryOS>
+            <NativeLibraryArch Condition="$(NativeLibraryArch) == '' AND $([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture) == 'X64'">x64</NativeLibraryArch>
+            <NativeLibraryArch Condition="$(NativeLibraryArch) == '' AND $([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture) == 'X86'">x86</NativeLibraryArch>
+            <NativeLibraryRuntimeID Condition="$(NativeLibraryRuntimeID) == ''">$(NativeLibraryOS)-$(NativeLibraryArch)</NativeLibraryRuntimeID>
+            <NativeLibraryPath Condition="$(NativeLibraryPath) == ''">$(MSBuildThisFileDirectory)runtime/$(NativeLibraryRuntimeID)</NativeLibraryPath>
             <NativeLibraryName Condition="$([System.Runtime.InteropServices.RuntimeInformation]::RuntimeIdentifier.StartsWith('win'))">glfw.dll</NativeLibraryName>
             <NativeLibraryName Condition="$([System.Runtime.InteropServices.RuntimeInformation]::RuntimeIdentifier.StartsWith('linux'))">libglfw.so</NativeLibraryName>
             <NativeLibraryName Condition="$([System.Runtime.InteropServices.RuntimeInformation]::RuntimeIdentifier.StartsWith('osx'))">libglfw.dylib</NativeLibraryName>
