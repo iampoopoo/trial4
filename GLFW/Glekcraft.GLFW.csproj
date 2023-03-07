@@ -24,9 +24,9 @@
             <NativeLibraryArch Condition="$(NativeLibraryArch) == '' AND $([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture) == 'X86'">x86</NativeLibraryArch>
             <NativeLibraryRuntimeID Condition="$(NativeLibraryRuntimeID) == ''">$(NativeLibraryOS)-$(NativeLibraryArch)</NativeLibraryRuntimeID>
             <NativeLibraryPath Condition="$(NativeLibraryPath) == ''">$(MSBuildThisFileDirectory)runtime/$(NativeLibraryRuntimeID)</NativeLibraryPath>
-            <NativeLibraryName Condition="$([System.Runtime.InteropServices.RuntimeInformation]::RuntimeIdentifier.StartsWith('win'))">glfw.dll</NativeLibraryName>
-            <NativeLibraryName Condition="$([System.Runtime.InteropServices.RuntimeInformation]::RuntimeIdentifier.StartsWith('linux'))">libglfw.so</NativeLibraryName>
-            <NativeLibraryName Condition="$([System.Runtime.InteropServices.RuntimeInformation]::RuntimeIdentifier.StartsWith('osx'))">libglfw.dylib</NativeLibraryName>
+            <NativeLibraryName Condition="$(NativeLibraryName) == '' AND $(NativeLibraryOS) == 'win'">glfw.dll</NativeLibraryName>
+            <NativeLibraryName Condition="$(NativeLibraryName) == '' AND $(NativeLibraryOS) == 'linux'">libglfw.so</NativeLibraryName>
+            <NativeLibraryName Condition="$(NativeLibraryName) == '' AND $(NativeLibraryOS) == 'osx'">libglfw.dylib</NativeLibraryName>
         </PropertyGroup>
         <ItemGroup>
             <Content Include="$(NativeLibraryPath)/$(NativeLibraryName)">
