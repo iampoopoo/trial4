@@ -18,8 +18,7 @@ jobs:
         os:
           - windows-latest
           - ubuntu-latest
-          #-- Builds for MacOS are currently not supported
-          # - macos-latest
+          - macos-latest
     steps:
       - id: checkout
         name: Checkout
@@ -58,8 +57,7 @@ jobs:
         os:
           - windows-latest
           - ubuntu-latest
-          #-- Builds for MacOS are currently not supported
-          # - macos-latest
+          - macos-latest
     steps:
       - id: checkout
         name: Checkout
