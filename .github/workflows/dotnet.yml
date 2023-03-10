@@ -100,4 +100,6 @@ jobs:
           Xvfb :99 -screen 0 1280x720x24 > /dev/null 2>&1 &
       - id: test
         name: Test
+        env:
+          DISPLAY: ${{runner.os == 'Linux' && ':99.0' || '0'}}
         run: dotnet test --no-build
