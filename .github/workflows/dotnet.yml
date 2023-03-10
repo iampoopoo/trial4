@@ -70,6 +70,13 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: 7.x
+      - id: setup-headless-x11
+        name: Setup headless X11
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends libglfw3 libxrandr-dev libx11-dev libgl1-mesa-dev libegl1-mesa-dev
+          sudo apt-get install -y --no-install-recommends xvfb libgl1-mesa-dri
       - id: cache
         name: Cache
         uses: actions/cache@v3
@@ -85,6 +92,12 @@ jobs:
       - id: build
         name: Build
         run: dotnet build --no-restore
+      - id: start-xvfb
+        name: Start Xvfb
+        if: runner.os == 'Linux'
+        run: |
+          export DISPLAY=:99.0
+          Xvfb :99 -screen 0 1280x720x24 > /dev/null 2>&1 &
       - id: test
         name: Test
         run: dotnet test --no-build
