@@ -1,10 +1,14 @@
 namespace Glekcraft;
 
 using System.Drawing;
+using System.IO;
+using System.Reflection;
 
 using Silk.NET.Input;
 using Silk.NET.OpenGL;
 using Silk.NET.Windowing;
+
+using Newtonsoft.Json;
 
 /// <summary>
 /// The main game state/logic controller.
@@ -69,23 +73,42 @@ public sealed class Game : IDisposable {
     /// Initialize the game.
     /// </summary>
     public void Init() {
-        // TODO: Load config
+        var assem = Assembly.GetExecutingAssembly();
+        var assemDir = Path.GetDirectoryName(assem?.Location);
+        if (assemDir == null) {
+            throw new InvalidOperationException("Could not get assembly directory");
+        }
+        var configDir = Path.GetFullPath(Path.Combine(assemDir, "..", "config"));
+        Config config;
+        if (!Directory.Exists(configDir)) {
+            config = Config.DEFAULT;
+            _ = Directory.CreateDirectory(configDir);
+        }
+        var configPath = Path.Combine(configDir, "config.json");
+        if (!File.Exists(configPath)) {
+            config = Config.DEFAULT;
+            var configJson = JsonConvert.SerializeObject(config, Formatting.Indented);
+            File.WriteAllText(configPath, configJson);
+        } else {
+            var configJson = File.ReadAllText(configPath);
+            config = JsonConvert.DeserializeObject<Config>(configJson) ?? Config.DEFAULT;
+        }
         var glOpts = GraphicsAPI.Default;
         glOpts.Version = new(4, 5);
         glOpts.Profile = ContextProfile.Core;
         glOpts.Flags = ContextFlags.ForwardCompatible;
         var windowOpts = WindowOptions.Default;
         windowOpts.API = glOpts;
-        windowOpts.Size = new(640, 480);
+        windowOpts.Size = config.WindowSize;
         windowOpts.Title = "Glekcraft";
         windowOpts.WindowClass = "Glekcraft";
         windowOpts.IsVisible = false;
         windowOpts.WindowState = WindowState.Normal;
         windowOpts.WindowBorder = WindowBorder.Resizable;
-        windowOpts.VSync = false;
-        windowOpts.Samples = 0;
+        windowOpts.VSync = config.VSyncEnabled;
+        windowOpts.Samples = config.AntialiasSamples;
         windowOpts.ShouldSwapAutomatically = false;
-        windowOpts.FramesPerSecond = 60;
+        windowOpts.FramesPerSecond = config.MaxFramerate;
         windowOpts.UpdatesPerSecond = 60;
         Window = Silk.NET.Windowing.Window.Create(windowOpts);
         Window.Load += OnWindowLoad;

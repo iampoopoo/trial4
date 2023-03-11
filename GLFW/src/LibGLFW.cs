@@ -14,8 +14,16 @@ public sealed class LibGLFW : IDisposable {
     public static Version NativeVersion =>
         NativeAPIs.GetVersion();
 
-    public static string? NativeVersionString =>
-        NativeAPIs.GetVersionString();
+    public static string NativeVersionString {
+        get {
+            var value = NativeAPIs.GetVersionString();
+            if (value == null) {
+                throw new GLFWException("Failed to get GLFW version string");
+            }
+            return value;
+        }
+    }
+
 
     public static int? LastErrorCode {
         get;

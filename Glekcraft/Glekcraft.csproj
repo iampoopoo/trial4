@@ -15,6 +15,7 @@
         <Using Include="System" />
     </ItemGroup>
     <ItemGroup>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageReference Include="Silk.NET.Input" Version="2.16.0" />
         <PackageReference Include="Silk.NET.Maths" Version="2.16.0" />
         <PackageReference Include="Silk.NET.OpenGL" Version="2.16.0" />
