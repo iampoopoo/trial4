@@ -1,6 +1,8 @@
 namespace Glekcraft;
 
 using System.Drawing;
+using System.IO;
+using System.Reflection;
 
 using Silk.NET.Input;
 using Silk.NET.OpenGL;
@@ -76,9 +78,20 @@ public sealed class Game : IDisposable {
     /// Initialize the game.
     /// </summary>
     public void Init() {
-        Config = RootConfig.LoadOrDefault("config.json");
+        var assembly = Assembly.GetExecutingAssembly();
+        var assemblyPath = Path.GetFullPath(assembly.Location);
+        var assemblyDir = Path.GetDirectoryName(assemblyPath);
+        if (assemblyDir == null) {
+            throw new InvalidOperationException("Could not get assembly directory");
+        }
+        var configDir = Path.Combine(assemblyDir, "config");
+        if (!Directory.Exists(configDir)) {
+            _ = Directory.CreateDirectory(configDir);
+        }
+        var configPath = Path.Combine(configDir, "config.json");
+        Config = RootConfig.LoadOrDefault(configPath);
         //-- Immediately overwrite the config in case we loaded the defaults
-        RootConfig.Save("config.json", Config);
+        RootConfig.Save(configPath, Config);
         var glOpts = GraphicsAPI.Default;
         glOpts.Version = new(4, 5);
         glOpts.Profile = ContextProfile.Core;
