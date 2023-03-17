@@ -5,6 +5,7 @@
         "k--kato.docomment",
         "tintoy.msbuild-project-tools",
         "github.remotehub",
-        "github.vscode-pull-request-github"
+        "github.vscode-pull-request-github",
+        "formulahendry.dotnet-test-explorer"
     ]
 }
