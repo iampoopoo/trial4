@@ -8,9 +8,6 @@
 !.vscode/launch.json
 !.vscode/tasks.json
 
-# Logs #
-*.log*
-
 # Artifacts #
 ## dotnet ##
 bin/
