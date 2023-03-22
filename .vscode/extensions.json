@@ -1,6 +1,11 @@
 {
     "recommendations": [
+        "ms-vscode.cpptools",
+        "vadimcn.vscode-lldb",
+        "twxs.cmake",
+        "josetr.cmake-language-support-vscode",
+        "ms-vscode.cmake-tools",
         "github.remotehub",
-        "github.vscode-pull-request-github",
+        "github.vscode-pull-request-github"
     ]
 }
