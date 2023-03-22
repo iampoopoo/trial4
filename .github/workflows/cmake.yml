@@ -1,0 +1,37 @@
+name: CMake
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+jobs:
+  build:
+    name: Build
+    runs-on: ${{matrix.target_os}}
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: true
+      matrix:
+        target_os:
+          - windows-latest
+          - ubuntu-latest
+          - macos-latest
+        build_type:
+          - Release
+          - Debug
+    steps:
+      - id: checkout
+        name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+          lfs: true
+      - id: configure
+        name: Configure
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=${{matrix.build_type}}
+      - id: build
+        name: Build
+        run: cmake --build build --config ${{matrix.build_type}}
