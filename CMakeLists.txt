@@ -51,6 +51,8 @@ set(SPDLOG_NO_ATOMIC_LEVELS OFF CACHE BOOL "prevent spdlog from using of std::at
 set(SPDLOG_DISABLE_DEFAULT_LOGGER OFF CACHE BOOL "Disable default logger creation" FORCE)
 add_subdirectory("./deps/spdlog/")
 
+add_subdirectory("./deps/glm/")
+
 set(GLEKCRAFT_SOURCES "./src/main.cpp")
 set(GLEKCRAFT_INCLUDE_DIRS "./include/")
 
@@ -58,4 +60,4 @@ add_executable(glekcraft ${GLEKCRAFT_SOURCES})
 target_include_directories(glekcraft PRIVATE ${GLEKCRAFT_INCLUDE_DIRS})
 target_compile_features(glekcraft PRIVATE cxx_std_23)
 target_compile_definitions(glekcraft PRIVATE "$<$<CONFIG:Debug>:DEBUG>")
-target_link_libraries(glekcraft PRIVATE glfw spdlog)
+target_link_libraries(glekcraft PRIVATE glfw spdlog glm)
