@@ -34,6 +34,21 @@ set(SPDLOG_USE_STD_FORMAT OFF CACHE BOOL "Use std::format instead of fmt library
 set(SPDLOG_FMT_EXTERNAL OFF CACHE BOOL "Use external fmt library instead of bundled" FORCE)
 set(SPDLOG_FMT_EXTERNAL_HO OFF CACHE BOOL "Use external fmt header-only library instead of bundled" FORCE)
 set(SPDLOG_NO_EXCEPTIONS OFF CACHE BOOL "Compile with -fno-exceptions. Call abort() on any spdlog exceptions" FORCE)
+
+if(WIN32)
+    set(SPDLOG_WCHAR_SUPPORT OFF CACHE BOOL "Support wchar api" FORCE)
+    set(SPDLOG_WCHAR_FILENAMES OFF CACHE BOOL "Support wchar filenames" FORCE)
+endif()
+
+if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
+    set(SPDLOG_CLOCK_COARSE OFF CACHE BOOL "Use CLOCK_REALTIME_COARSE instead of the regular clock," FORCE)
+endif()
+
+set(SPDLOG_PREVENT_CHILD_FD OFF CACHE BOOL "Prevent from child processes to inherit log file descriptors" FORCE)
+set(SPDLOG_NO_THREAD_ID OFF CACHE BOOL "prevent spdlog from querying the thread id on each log call if thread id is not needed" FORCE)
+set(SPDLOG_NO_TLS OFF CACHE BOOL "prevent spdlog from using thread local storage" FORCE)
+set(SPDLOG_NO_ATOMIC_LEVELS OFF CACHE BOOL "prevent spdlog from using of std::atomic log levels (use only if your code never modifies log levels concurrently" FORCE)
+set(SPDLOG_DISABLE_DEFAULT_LOGGER OFF CACHE BOOL "Disable default logger creation" FORCE)
 add_subdirectory("./deps/spdlog/")
 
 set(GLEKCRAFT_SOURCES "./src/main.cpp")
