@@ -1,6 +1,6 @@
 # G'lekcraft #
 
-A simple Minecraft clone written from scratch in C# using OpenGL.
+A simple Minecraft clone written from scratch in C/C++ using OpenGL.
 
 <!-- omit in toc -->
 ## Table of Contents ##

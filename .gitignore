@@ -7,10 +7,3 @@
 !.vscode/extensions.json
 !.vscode/launch.json
 !.vscode/tasks.json
-
-# Artifacts #
-## dotnet ##
-bin/
-obj/
-dist/
-TestResults/
