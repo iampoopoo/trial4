@@ -63,10 +63,10 @@ endif()
 
 add_subdirectory("./deps/glew/build/cmake/")
 
-set(GLEKCRAFT_SOURCES "./src/main.cpp")
+set(GLEKCRAFT_SOURCES "./src/main.cpp" "./src/game.cpp")
 set(GLEKCRAFT_INCLUDE_DIRS "./include/")
 
-add_executable(glekcraft ${GLEKCRAFT_SOURCES})
+add_executable(glekcraft WIN32 ${GLEKCRAFT_SOURCES})
 target_include_directories(glekcraft PRIVATE ${GLEKCRAFT_INCLUDE_DIRS})
 target_compile_features(glekcraft PRIVATE cxx_std_23)
 target_compile_definitions(glekcraft PRIVATE "$<$<CONFIG:Debug>:DEBUG>" GLFW_INCLUDE_NONE)
