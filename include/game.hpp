@@ -9,6 +9,8 @@
 
 #include <cstdlib>
 
+#include <spdlog/spdlog.h>
+
 #include <GLFW/glfw3.h>
 
 namespace glekcraft {
@@ -17,6 +19,11 @@ namespace glekcraft {
      */
     class Game {
     private:
+        /**
+         * The logger for this class.
+         */
+        static std::shared_ptr<spdlog::logger> s_logger;
+
         /**
          * Whether the instance has been initialized.
          */

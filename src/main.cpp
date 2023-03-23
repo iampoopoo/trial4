@@ -6,11 +6,34 @@
  */
 
 #include <cstdlib>
-#include <iostream>
+#include <vector>
+
+#include <spdlog/spdlog.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
+
+#ifdef DEBUG
+#include <spdlog/sinks/msvc_sink.h>
+#endif
 
 #include "game.hpp"
 
+void setupLogging() {
+    auto sinks = std::vector<spdlog::sink_ptr>();
+    sinks.push_back(std::make_shared<spdlog::sinks::stdout_color_sink_st>());
+#ifdef DEBUG
+    sinks.push_back(std::make_shared<spdlog::sinks::msvc_sink_st>());
+#endif
+    auto logger =
+        std::make_shared<spdlog::logger>("root", sinks.begin(), sinks.end());
+    spdlog::set_default_logger(logger);
+    spdlog::set_level(spdlog::level::info);
+    // TODO: Maybe add timestamp to pattern?
+    spdlog::set_pattern("[%^%l%$@%n] %v");
+    spdlog::info("Logging initialized");
+}
+
 int main(int argc, char** argv) {
+    setupLogging();
     auto exitCode = EXIT_SUCCESS;
     auto game = glekcraft::Game();
     try {
@@ -18,7 +41,7 @@ int main(int argc, char** argv) {
         game.Run();
         exitCode = game.GetExitCode();
     } catch (const std::exception& e) {
-        std::cerr << "Fatal Error: " << e.what() << std::endl;
+        spdlog::critical("Unhandled exception: {}", e.what());
         exitCode = EXIT_FAILURE;
     }
     game.Terminate();

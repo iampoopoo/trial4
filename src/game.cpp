@@ -10,7 +10,12 @@
 #include <stdexcept>
 
 namespace glekcraft {
+    std::shared_ptr<spdlog::logger> Game::s_logger;
+
     Game::Game() {
+        if (s_logger == nullptr) {
+            s_logger = spdlog::default_logger()->clone("game");
+        }
         m_initialized = false;
         m_running = false;
         m_exitCode = EXIT_SUCCESS;
@@ -69,6 +74,7 @@ namespace glekcraft {
             throw std::runtime_error("Failed to create game window");
         }
         glfwMakeContextCurrent(m_window);
+        s_logger->info("Initialized");
         m_initialized = true;
     }
 
