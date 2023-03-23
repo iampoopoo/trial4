@@ -53,6 +53,16 @@ add_subdirectory("./deps/spdlog/")
 
 add_subdirectory("./deps/glm/")
 
+set(BUILD_UTILS OFF CACHE BOOL "utilities" FORCE)
+set(GLEW_REGAL OFF CACHE BOOL "Regal mode" FORCE)
+set(GLEW_OSMESA OFF CACHE BOOL "OSMesa mode" FORCE)
+
+if(APPLE)
+    set(BUILD_FRAMEWORK OFF CACHE BOOL "Build Framework bundle for OSX" FORCE)
+endif()
+
+add_subdirectory("./deps/glew/build/cmake/")
+
 set(GLEKCRAFT_SOURCES "./src/main.cpp")
 set(GLEKCRAFT_INCLUDE_DIRS "./include/")
 
@@ -60,4 +70,4 @@ add_executable(glekcraft ${GLEKCRAFT_SOURCES})
 target_include_directories(glekcraft PRIVATE ${GLEKCRAFT_INCLUDE_DIRS})
 target_compile_features(glekcraft PRIVATE cxx_std_23)
 target_compile_definitions(glekcraft PRIVATE "$<$<CONFIG:Debug>:DEBUG>")
-target_link_libraries(glekcraft PRIVATE glfw spdlog glm)
+target_link_libraries(glekcraft PRIVATE glfw spdlog glm glew_s)
