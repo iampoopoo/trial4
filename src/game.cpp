@@ -9,6 +9,8 @@
 
 #include <stdexcept>
 
+#include <GL/glew.h>
+
 namespace glekcraft {
     std::shared_ptr<spdlog::logger> Game::s_logger;
 
@@ -74,6 +76,9 @@ namespace glekcraft {
             throw std::runtime_error("Failed to create game window");
         }
         glfwMakeContextCurrent(m_window);
+        if (glewInit() != GLEW_OK) {
+            throw std::runtime_error("Failed to initialize GLEW");
+        }
         s_logger->info("Initialized");
         m_initialized = true;
     }
@@ -117,7 +122,12 @@ namespace glekcraft {
 
     void Game::Render() {
         glfwMakeContextCurrent(m_window);
-        // TODO
+        int fbWidth, fbHeight;
+        glfwGetFramebufferSize(m_window, &fbWidth, &fbHeight);
+        glViewport(0, 0, fbWidth, fbHeight);
+        glClearColor(100.0f / 255.0f, 149.0f / 255.0f, 237.0f / 255.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        // TODO: Render
         glfwSwapBuffers(m_window);
     }
 } // namespace glekcraft
