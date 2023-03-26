@@ -16,6 +16,7 @@ namespace glekcraft {
     Game::Game() {
         if (s_logger == nullptr) {
             s_logger = spdlog::default_logger()->clone("game");
+            s_logger->set_level(spdlog::level::trace);
         }
         m_initialized = false;
         m_running = false;
@@ -23,9 +24,10 @@ namespace glekcraft {
         m_shouldExit = false;
         m_window = nullptr;
         m_vao = 0;
-        m_vbo = 0;
-        m_ebo = 0;
-        m_shader = 0;
+        m_vbo = nullptr;
+        m_cbo = nullptr;
+        m_ebo = nullptr;
+        m_shader = nullptr;
     }
 
     Game::~Game() {
@@ -83,62 +85,56 @@ namespace glekcraft {
             throw std::runtime_error("Failed to initialize GLEW");
         }
         glGenVertexArrays(1, &m_vao);
-        if (m_vao == 0) {
-            throw std::runtime_error("Failed to create vertex array object");
-        }
-        glGenBuffers(1, &m_vbo);
-        if (m_vbo == 0) {
-            throw std::runtime_error("Failed to create vertex buffer object");
-        }
-        glGenBuffers(1, &m_ebo);
-        if (m_ebo == 0) {
-            throw std::runtime_error("Failed to create element buffer object");
-        }
-        m_shader = glCreateProgram();
-        if (m_shader == 0) {
-            throw std::runtime_error("Failed to create shader program");
-        }
-        auto m_vShader = glCreateShader(GL_VERTEX_SHADER);
-        if (m_vShader == 0) {
-            throw std::runtime_error("Failed to create vertex shader");
-        }
-        auto m_fShader = glCreateShader(GL_FRAGMENT_SHADER);
-        if (m_fShader == 0) {
-            throw std::runtime_error("Failed to create fragment shader");
-        }
-        auto m_vShaderSource = R"(
-            #version 450 core
-            layout (location = 0) in vec3 vertex_position;
-            void main() {
-                gl_Position = vec4(vertex_position, 1.0);
-            }
-        )";
-        auto m_fShaderSource = R"(
-            #version 450 core
-            out vec4 fragColor;
-            void main() {
-                fragColor = vec4(1.0, 0.0, 0.0, 1.0);
-            }
-        )";
-        glShaderSource(m_vShader, 1, &m_vShaderSource, nullptr);
-        glCompileShader(m_vShader);
-        glShaderSource(m_fShader, 1, &m_fShaderSource, nullptr);
-        glCompileShader(m_fShader);
-        glAttachShader(m_shader, m_vShader);
-        glAttachShader(m_shader, m_fShader);
-        glLinkProgram(m_shader);
-        glDeleteShader(m_vShader);
-        glDeleteShader(m_fShader);
-        glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-        auto vertices = std::array<float, 9>{-0.5f, -0.5f, 0.0f, 0.5f, -0.5f,
-                                             0.0f,  0.0f,  0.5f, 0.0f};
+        glBindVertexArray(m_vao);
+        m_vbo = new GLBuffer(GL_ARRAY_BUFFER);
+        m_cbo = new GLBuffer(GL_ARRAY_BUFFER);
+        m_ebo = new GLBuffer(GL_ELEMENT_ARRAY_BUFFER);
+        auto vertices = std::array<float, 9>{
+            -0.5f, -0.5f, 0.0f, 0.5f, -0.5f, 0.0f, 0.0f, 0.5f, 0.0f,
+        };
+        m_vbo->Bind();
         glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float),
                      vertices.data(), GL_STATIC_DRAW);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
+        auto colors = std::array<float, 9>{
+            0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f,
+        };
+        m_cbo->Bind();
+        glBufferData(GL_ARRAY_BUFFER, colors.size() * sizeof(float),
+                     colors.data(), GL_STATIC_DRAW);
         auto indices = std::array<unsigned int, 3>{0, 1, 2};
+        m_ebo->Bind();
         glBufferData(GL_ELEMENT_ARRAY_BUFFER,
                      indices.size() * sizeof(unsigned int), indices.data(),
                      GL_STATIC_DRAW);
+        m_shader = new GLShaderProgram();
+        auto vShader = new GLShader(GL_VERTEX_SHADER);
+        auto fShader = new GLShader(GL_FRAGMENT_SHADER);
+        m_shader->AttachShader(vShader);
+        m_shader->AttachShader(fShader);
+        vShader->UploadSource(R"(
+            #version 450 core
+            layout (location = 0) in vec3 aPos;
+            layout (location = 1) in vec3 aColor;
+            out vec3 vColor;
+            void main() {
+                vColor = aColor;
+                gl_Position = vec4(aPos, 1.0);
+            }
+        )");
+        fShader->UploadSource(R"(
+            #version 450 core
+            in vec3 vColor;
+            out vec4 FragColor;
+            void main() {
+                FragColor = vec4(vColor, 1.0);
+            }
+        )");
+        vShader->Compile();
+        s_logger->debug(vShader->GetInfoLog());
+        fShader->Compile();
+        s_logger->debug(fShader->GetInfoLog());
+        m_shader->Link();
+        s_logger->debug(m_shader->GetInfoLog());
         s_logger->info("Initialized");
         m_initialized = true;
     }
@@ -161,17 +157,21 @@ namespace glekcraft {
 
     void Game::Terminate() noexcept {
         m_initialized = false;
-        if (m_shader != 0) {
-            glDeleteProgram(m_shader);
-            m_shader = 0;
+        if (m_shader != nullptr) {
+            m_shader->Dispose();
+            m_shader = nullptr;
         }
-        if (m_ebo != 0) {
-            glDeleteBuffers(1, &m_ebo);
-            m_ebo = 0;
+        if (m_ebo != nullptr) {
+            m_ebo->Dispose();
+            m_ebo = nullptr;
         }
-        if (m_vbo != 0) {
-            glDeleteBuffers(1, &m_vbo);
-            m_vbo = 0;
+        if (m_cbo != nullptr) {
+            m_cbo->Dispose();
+            m_cbo = nullptr;
+        }
+        if (m_vbo != nullptr) {
+            m_vbo->Dispose();
+            m_vbo = nullptr;
         }
         if (m_vao != 0) {
             glDeleteVertexArrays(1, &m_vao);
@@ -204,14 +204,20 @@ namespace glekcraft {
         glClearColor(100.0f / 255.0f, 149.0f / 255.0f, 237.0f / 255.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glBindVertexArray(m_vao);
-        glUseProgram(m_shader);
+        m_shader->Activate();
         glEnableVertexAttribArray(0);
-        glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+        glEnableVertexAttribArray(1);
+        m_vbo->Bind();
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float),
                               nullptr);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
+        m_cbo->Bind();
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float),
+                              nullptr);
+        m_ebo->Bind();
         glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr);
+        glDisableVertexAttribArray(1);
         glDisableVertexAttribArray(0);
+        m_shader->Deactivate();
         glfwSwapBuffers(m_window);
     }
 } // namespace glekcraft

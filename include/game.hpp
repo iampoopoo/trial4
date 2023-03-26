@@ -15,6 +15,9 @@
 
 #include <GL/glew.h>
 
+#include "glBuffer.hpp"
+#include "glShaderProgram.hpp"
+
 namespace glekcraft {
     /**
      * The main game logic/state controller.
@@ -56,11 +59,13 @@ namespace glekcraft {
          */
         GLuint m_vao;
 
-        GLuint m_vbo;
+        GLBuffer* m_vbo;
 
-        GLuint m_ebo;
+        GLBuffer* m_cbo;
 
-        GLuint m_shader;
+        GLBuffer* m_ebo;
+
+        GLShaderProgram* m_shader;
 
         /**
          * The copy constructor.

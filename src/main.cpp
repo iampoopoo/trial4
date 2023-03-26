@@ -9,6 +9,7 @@
 #include <vector>
 
 #include <spdlog/spdlog.h>
+#include <spdlog/sinks/rotating_file_sink.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 
 #ifdef DEBUG
@@ -20,6 +21,8 @@
 void setupLogging() {
     auto sinks = std::vector<spdlog::sink_ptr>();
     sinks.push_back(std::make_shared<spdlog::sinks::stdout_color_sink_st>());
+    sinks.push_back(std::make_shared<spdlog::sinks::rotating_file_sink_st>(
+        "output.log", 1024 * 1024, 3));
 #ifdef DEBUG
     sinks.push_back(std::make_shared<spdlog::sinks::msvc_sink_st>());
 #endif
