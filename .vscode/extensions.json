@@ -1,5 +1,11 @@
 {
     "recommendations": [
+        "ms-dotnettools.csharp",
+        "formulahendry.dotnet-test-explorer",
+        "josephwoodward.vscodeilviewer",
+        "k--kato.docomment",
+        "tintoy.msbuild-project-tools",
+        "ms-vscode.mono-debug",
         "github.remotehub",
         "github.vscode-pull-request-github"
     ]
