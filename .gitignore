@@ -7,3 +7,30 @@
 !.vscode/extensions.json
 !.vscode/launch.json
 !.vscode/tasks.json
+
+## Vim ##
+### Swap Files ###
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+[._]s[a-rt-v][a-z]
+[._]ss[a-gi-z]
+[._]sw[a-p]
+
+### Session Files ###
+Session.vim
+Sessionx.vim
+
+### Temporary Files ###
+.netrwhist
+*~
+
+### Auto-generated Tag Files ###
+tags
+
+### Undo Persistence Files ###
+[._]*.un~
+
+# Artifacts #
+## dotnet ##
+[Bb]in/
+[Oo]bj/
