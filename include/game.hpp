@@ -13,6 +13,8 @@
 
 #include <GLFW/glfw3.h>
 
+#include <GL/glew.h>
+
 namespace glekcraft {
     /**
      * The main game logic/state controller.
@@ -48,6 +50,17 @@ namespace glekcraft {
          * The main window.
          */
         GLFWwindow* m_window;
+
+        /**
+         * The OpenGL vertex array object.
+         */
+        GLuint m_vao;
+
+        GLuint m_vbo;
+
+        GLuint m_ebo;
+
+        GLuint m_shader;
 
         /**
          * The copy constructor.
