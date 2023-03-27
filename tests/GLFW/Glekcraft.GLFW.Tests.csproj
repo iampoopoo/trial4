@@ -16,6 +16,7 @@
         <Using Include="FluentAssertions" />
     </ItemGroup>
     <ItemGroup>
+        <ProjectReference Include="../../GLFW/Glekcraft.GLFW.csproj" />
         <PackageReference Include="FluentAssertions" Version="6.10.0" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
         <PackageReference Include="MSTest.TestAdapter" Version="3.0.2" />
