@@ -2,6 +2,7 @@
 <?xml-model href="https://github.com/dotnet/msbuild/raw/main/src/MSBuild/Microsoft.Build.xsd" type="application/xml" schematypens="http://schemas.microsoft.com/developer/msbuild/2003"?>
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
+        <RuntimeIdentifiers>win;linux</RuntimeIdentifiers>
         <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
         <RootNamespace>Glekcraft.GLFW</RootNamespace>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -12,5 +13,26 @@
     </PropertyGroup>
     <ItemGroup>
         <Using Include="System" />
+    </ItemGroup>
+    <PropertyGroup>
+        <TargetedOS Condition="$(TargetedOS) == '' AND $([MSBuild]::IsOSPlatform('Windows'))">win</TargetedOS>
+        <TargetedOS Condition="$(TargetedOS) == '' AND $([MSBuild]::IsOSPlatform('Linux'))">linux</TargetedOS>
+        <TargetedOS Condition="$(TargetedOS) == '' AND $([MSBuild]::IsOSPlatform('OSX'))">macos</TargetedOS>
+        <TargetedArchitecture Condition="$(TargetedArchitecture) == '' AND $([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture) == 'X64'">x64</TargetedArchitecture>
+        <TargetedArchitecture Condition="$(TargetedArchitecture) == '' AND $([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture) == 'X86'">x86</TargetedArchitecture>
+        <TargetedRuntime Condition="$(TargetedRuntime) == ''">$(TargetedOS)-$(TargetedArchitecture)</TargetedRuntime>
+        <NativeDLLPrefix Condition="$(NativeDLLPrefix) == '' AND $(TargetedOS) == 'win'"></NativeDLLPrefix>
+        <NativeDLLPrefix Condition="$(NativeDLLPrefix) == '' AND $(TargetedOS) == 'linux'">lib</NativeDLLPrefix>
+        <NativeDLLPrefix Condition="$(NativeDLLPrefix) == '' AND $(TargetedOS) == 'macos'">lib</NativeDLLPrefix>
+        <NativeDLLSuffix Condition="$(NativeDLLSuffix) == '' AND $(TargetedOS) == 'win'"></NativeDLLSuffix>
+        <NativeDLLSuffix Condition="$(NativeDLLSuffix) == '' AND $(TargetedOS) == 'linux'"></NativeDLLSuffix>
+        <NativeDLLSuffix Condition="$(NativeDLLSuffix) == '' AND $(TargetedOS) == 'macos'"></NativeDLLSuffix>
+        <NativeDLLExtension Condition="$(NativeDLLExtension) == '' AND $(TargetedOS) == 'win'">.dll</NativeDLLExtension>
+        <NativeDLLExtension Condition="$(NativeDLLExtension) == '' AND $(TargetedOS) == 'linux'">.so</NativeDLLExtension>
+        <NativeDLLExtension Condition="$(NativeDLLExtension) == '' AND $(TargetedOS) == 'macos'">.dylib</NativeDLLExtension>
+        <NativeDLLName Condition="$(NativeDLLName) == ''">$(NativeDLLPrefix)glfw$(NativeDLLSuffix)$(NativeDLLExtension)</NativeDLLName>
+    </PropertyGroup>
+    <ItemGroup>
+        <Content Include="$(MSBuildThisFileDirectory)runtime/$(TargetedRuntime)/$(NativeDLLName)" CopyToOutputDirectory="Always" Link="$(NativeDLLName)" />
     </ItemGroup>
 </Project>
