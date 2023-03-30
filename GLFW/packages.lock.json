@@ -3,7 +3,6 @@
   "dependencies": {
     "net7.0": {},
     "net7.0/linux": {},
-    "net7.0/win": {},
-    "net7.0/win-x64": {}
+    "net7.0/win": {}
   }
 }
