@@ -6,6 +6,7 @@
     </PropertyGroup>
     <Import Condition="$(NativeRuntimePropsGuard) != 'true'" Project="$(MSBuildThisFileDirectory)NativeRuntime.props" />
     <Target Name="PrintNativeRuntimeInfo" BeforeTargets="Build">
+        <Message Importance="High" Text="Native Runtime Top-level Identifier: $(NativeRuntimeTopIdentifier)" />
         <Message Importance="High" Text="Native Runtime Identifier: $(NativeRuntimeIdentifier)" />
         <Message Importance="High" Text="Native Runtime OS: $(NativeRuntimeOS)" />
         <Message Importance="High" Text="Native Runtime Architecture: $(NativeRuntimeArchitecture)" />

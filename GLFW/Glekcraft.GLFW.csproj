@@ -20,6 +20,6 @@
         <NativeLibraryFullName Condition="$(NativeLibraryFullName) == ''">$(NativeRuntimeFilePrefix)$(NativeLibraryName)$(NativeRuntimeFileSuffix)$(NativeRuntimeFileExtension)</NativeLibraryFullName>
     </PropertyGroup>
     <ItemGroup>
-        <Content Include="$(MSBuildThisFileDirectory)runtime/$(NativeRuntimeIdentifier)/$(NativeLibraryFullName)" CopyToOutputDirectory="Always" Visible="false" Link="$(NativeLibraryFullName)" />
+        <Content Include="$(MSBuildThisFileDirectory)runtime/$(NativeRuntimeTopIdentifier)/$(NativeLibraryFullName)" CopyToOutputDirectory="Always" Visible="false" Link="$(NativeLibraryFullName)" />
     </ItemGroup>
 </Project>
