@@ -14,25 +14,12 @@
     <ItemGroup>
         <Using Include="System" />
     </ItemGroup>
+    <Import Condition="$(NativeRuntimeTargetsGuard) != 'true'" Project="$(MSBuildThisFileDirectory)../NativeRuntime.targets" />
     <PropertyGroup>
-        <TargetedOS Condition="$(TargetedOS) == '' AND $([MSBuild]::IsOSPlatform('Windows'))">win</TargetedOS>
-        <TargetedOS Condition="$(TargetedOS) == '' AND $([MSBuild]::IsOSPlatform('Linux'))">linux</TargetedOS>
-        <TargetedOS Condition="$(TargetedOS) == '' AND $([MSBuild]::IsOSPlatform('OSX'))">macos</TargetedOS>
-        <TargetedArchitecture Condition="$(TargetedArchitecture) == '' AND $([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture) == 'X64'">x64</TargetedArchitecture>
-        <TargetedArchitecture Condition="$(TargetedArchitecture) == '' AND $([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture) == 'X86'">x86</TargetedArchitecture>
-        <TargetedRuntime Condition="$(TargetedRuntime) == ''">$(TargetedOS)-$(TargetedArchitecture)</TargetedRuntime>
-        <NativeDLLPrefix Condition="$(NativeDLLPrefix) == '' AND $(TargetedOS) == 'win'"></NativeDLLPrefix>
-        <NativeDLLPrefix Condition="$(NativeDLLPrefix) == '' AND $(TargetedOS) == 'linux'">lib</NativeDLLPrefix>
-        <NativeDLLPrefix Condition="$(NativeDLLPrefix) == '' AND $(TargetedOS) == 'macos'">lib</NativeDLLPrefix>
-        <NativeDLLSuffix Condition="$(NativeDLLSuffix) == '' AND $(TargetedOS) == 'win'"></NativeDLLSuffix>
-        <NativeDLLSuffix Condition="$(NativeDLLSuffix) == '' AND $(TargetedOS) == 'linux'"></NativeDLLSuffix>
-        <NativeDLLSuffix Condition="$(NativeDLLSuffix) == '' AND $(TargetedOS) == 'macos'"></NativeDLLSuffix>
-        <NativeDLLExtension Condition="$(NativeDLLExtension) == '' AND $(TargetedOS) == 'win'">.dll</NativeDLLExtension>
-        <NativeDLLExtension Condition="$(NativeDLLExtension) == '' AND $(TargetedOS) == 'linux'">.so</NativeDLLExtension>
-        <NativeDLLExtension Condition="$(NativeDLLExtension) == '' AND $(TargetedOS) == 'macos'">.dylib</NativeDLLExtension>
-        <NativeDLLName Condition="$(NativeDLLName) == ''">$(NativeDLLPrefix)glfw$(NativeDLLSuffix)$(NativeDLLExtension)</NativeDLLName>
+        <NativeLibraryName Condition="$(NativeLibraryName) == ''">glfw</NativeLibraryName>
+        <NativeLibraryFullName Condition="$(NativeLibraryFullName) == ''">$(NativeRuntimeFilePrefix)$(NativeLibraryName)$(NativeRuntimeFileSuffix)$(NativeRuntimeFileExtension)</NativeLibraryFullName>
     </PropertyGroup>
     <ItemGroup>
-        <Content Include="$(MSBuildThisFileDirectory)runtime/$(TargetedRuntime)/$(NativeDLLName)" CopyToOutputDirectory="Always" Link="$(NativeDLLName)" />
+        <Content Include="$(MSBuildThisFileDirectory)runtime/$(NativeRuntimeIdentifier)/$(NativeLibraryFullName)" CopyToOutputDirectory="Always" Visible="false" Link="$(NativeLibraryFullName)" />
     </ItemGroup>
 </Project>
