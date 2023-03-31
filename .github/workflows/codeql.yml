@@ -19,26 +19,26 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language:
-          - cpp
+        languages:
+          - csharp
     steps:
       - id: checkout
-        name: Checkout
+        name: Checkout repository
         uses: actions/checkout@v3
         with:
-          submodules: recursive
           lfs: true
-      - id: initialize
+          submodules: true
+      - id: init-codeql
         name: Initialize CodeQL
         uses: github/codeql-action/init@v2
         with:
-          languages: ${{matrix.language}}
+          languages: ${{matrix.languages}}
           queries: security-extended,security-and-quality
       - id: autobuild
         name: Autobuild
         uses: github/codeql-action/autobuild@v2
       - id: analyze
-        name: Perform Analysis
+        name: Run CodeQL analysis
         uses: github/codeql-action/analyze@v2
         with:
-          category: "/language:${{matrix.language}}"
+          category: "/language:${{matrix.languages}}"

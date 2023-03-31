@@ -1,10 +1,11 @@
 {
     "recommendations": [
-        "ms-vscode.cpptools",
-        "vadimcn.vscode-lldb",
-        "twxs.cmake",
-        "josetr.cmake-language-support-vscode",
-        "ms-vscode.cmake-tools",
+        "ms-dotnettools.csharp",
+        "formulahendry.dotnet-test-explorer",
+        "josephwoodward.vscodeilviewer",
+        "k--kato.docomment",
+        "tintoy.msbuild-project-tools",
+        "ms-vscode.mono-debug",
         "github.remotehub",
         "github.vscode-pull-request-github"
     ]
