@@ -14,7 +14,7 @@
     <ItemGroup>
         <Using Include="System" />
     </ItemGroup>
-    <Import Condition="$(NativeRuntimeTargetsGuard) != 'true'" Project="$(MSBuildThisFileDirectory)../NativeRuntime.targets" />
+    <Import Condition="$(NativeRuntimeTargetsGuard) != 'true'" Project="$(MSBuildThisFileDirectory)../../NativeRuntime.targets" />
     <PropertyGroup>
         <NativeLibraryName Condition="$(NativeLibraryName) == ''">glfw</NativeLibraryName>
         <NativeLibraryFullName Condition="$(NativeLibraryFullName) == ''">$(NativeRuntimeFilePrefix)$(NativeLibraryName)$(NativeRuntimeFileSuffix)$(NativeRuntimeFileExtension)</NativeLibraryFullName>
