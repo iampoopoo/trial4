@@ -28,6 +28,7 @@ jobs:
         with:
           lfs: true
           submodules: true
+          clean: true
       - id: init-codeql
         name: Initialize CodeQL
         uses: github/codeql-action/init@v2
