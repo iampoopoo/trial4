@@ -9,6 +9,7 @@
         <NativeRuntimeIdentifier Condition="$(NativeRuntimeIdentifier) == ''">$([System.Runtime.InteropServices.RuntimeInformation]::RuntimeIdentifier)</NativeRuntimeIdentifier>
         <NativeRuntimeOS Condition="$(NativeRuntimeOS) == '' AND $(NativeRuntimeIdentifier.StartsWith('win'))">win</NativeRuntimeOS>
         <NativeRuntimeOS Condition="$(NativeRuntimeOS) == '' AND $(NativeRuntimeIdentifier.StartsWith('linux'))">linux</NativeRuntimeOS>
+        <NativeRuntimeOS Condition="$(NativeRuntimeOS) == '' AND $(NativeRuntimeIdentifier.StartsWith('ubuntu'))">linux</NativeRuntimeOS>
         <NativeRuntimeOS Condition="$(NativeRuntimeOS) == '' AND $(NativeRuntimeIdentifier.StartsWith('osx'))">osx</NativeRuntimeOS>
         <NativeRuntimeArchitecture Condition="$(NativeRuntimeArchitecture) == '' AND $(NativeRuntimeIdentifier) != ''">$(NativeRuntimeIdentifier.Split('-')[1])</NativeRuntimeArchitecture>
         <NativeRuntimeTopIdentifier Condition="$(NativeRuntimeTopIdentifier) == ''">$(NativeRuntimeOS)-$(NativeRuntimeArchitecture)</NativeRuntimeTopIdentifier>
