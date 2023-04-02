@@ -50,7 +50,7 @@ public sealed class LibGLFW : IDisposable {
     /// <returns>
     /// The existing instance if one is available, otherwise a new instance.
     /// </returns>
-    /// <exception cref="Exception">
+    /// <exception cref="NativeException">
     /// Thrown if the native library failed to initialize.
     /// </exception>
     public static LibGLFW Initialize(INativeAPIs? nativeAPIs = null) {
@@ -103,9 +103,6 @@ public sealed class LibGLFW : IDisposable {
     /// <summary>
     /// Create a new instance.
     /// </summary>
-    /// <exception cref="Exception">
-    /// Thrown if the native library failed to initialize.
-    /// </exception>
     private LibGLFW(INativeAPIs nativeAPIs) =>
         NativeAPIs = nativeAPIs;
 
@@ -141,6 +138,12 @@ public sealed class LibGLFW : IDisposable {
 
     #region Private Methods
 
+    /// <summary>
+    /// Initialize the native library.
+    /// </summary>
+    /// <exception cref="NativeException">
+    /// Thrown if the native library failed to initialize.
+    /// </exception>
     private void Initialize() {
 #pragma warning disable IDE0058
         NativeAPIs.SetErrorCallback(OnNativeError);
@@ -149,7 +152,7 @@ public sealed class LibGLFW : IDisposable {
 #pragma warning disable IDE0058
             NativeAPIs.SetErrorCallback(null);
 #pragma warning restore IDE0058
-            throw new Exception("Failed to initialize the native library");
+            throw new NativeException("Failed to initialize the native library");
         }
     }
 
