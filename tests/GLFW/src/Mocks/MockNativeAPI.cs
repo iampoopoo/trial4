@@ -3,7 +3,7 @@ namespace Glekcraft.GLFW.Tests.Mocks;
 /// <summary>
 /// A class that can be used to mock the native APIs.
 /// </summary>
-public class NativeAPIs : INativeAPIs {
+public class MockNativeAPIs : INativeAPIs {
     #region Public Properties
 
     public Version GetVersionResult {
@@ -41,12 +41,12 @@ public class NativeAPIs : INativeAPIs {
         set;
     }
 
-    public INativeAPIs.ErrorCallback? ErrorCallbackInput {
+    public INativeAPIs.ErrorCallback? SetErrorCallbackInput {
         get;
         set;
     }
 
-    public INativeAPIs.ErrorCallback? ErrorCallbackResult {
+    public INativeAPIs.ErrorCallback? SetErrorCallbackResult {
         get;
         set;
     }
@@ -63,8 +63,8 @@ public class NativeAPIs : INativeAPIs {
         InitResult = true;
         GetErrorResult = 0;
         GetErrorDescription = null;
-        ErrorCallbackInput = null;
-        ErrorCallbackResult = null;
+        SetErrorCallbackInput = null;
+        SetErrorCallbackResult = null;
     }
 
     public Version GetVersion() =>
@@ -96,8 +96,8 @@ public class NativeAPIs : INativeAPIs {
     }
 
     public INativeAPIs.ErrorCallback? SetErrorCallback(INativeAPIs.ErrorCallback? callback) {
-        ErrorCallbackInput = callback;
-        return ErrorCallbackResult;
+        SetErrorCallbackInput = callback;
+        return SetErrorCallbackResult;
     }
 
     #endregion
