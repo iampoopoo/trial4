@@ -24,6 +24,22 @@ public sealed class LibGLFW : IDisposable {
     public static bool IsInitialized =>
         Instance is not null;
 
+    /// <summary>
+    /// The code for the last error raised by the native library.
+    /// </summary>
+    public static ErrorCode? LastErrorCode {
+        get;
+        private set;
+    }
+
+    /// <summary>
+    /// The description for the last error raised by the native library.
+    /// </summary>
+    public static string? LastErrorDescription {
+        get;
+        private set;
+    }
+
     #endregion
 
     #region Public Static Methods
@@ -38,8 +54,19 @@ public sealed class LibGLFW : IDisposable {
     /// Thrown if the native library failed to initialize.
     /// </exception>
     public static LibGLFW Initialize(INativeAPIs? nativeAPIs = null) {
-        Instance ??= new(nativeAPIs ?? new DefaultNativeAPIs());
+        if (Instance == null) {
+            Instance = new(nativeAPIs ?? new DefaultNativeAPIs());
+            Instance.Initialize();
+        }
         return Instance;
+    }
+
+    /// <summary>
+    /// Clear the last error raised by the native library.
+    /// </summary>
+    public static void ClearLastError() {
+        LastErrorCode = null;
+        LastErrorDescription = null;
     }
 
     #endregion
@@ -79,12 +106,8 @@ public sealed class LibGLFW : IDisposable {
     /// <exception cref="Exception">
     /// Thrown if the native library failed to initialize.
     /// </exception>
-    private LibGLFW(INativeAPIs nativeAPIs) {
+    private LibGLFW(INativeAPIs nativeAPIs) =>
         NativeAPIs = nativeAPIs;
-        if (!NativeAPIs.Init()) {
-            throw new Exception("Failed to initialize the native library");
-        }
-    }
 
     /// <summary>
     /// The finalizer.
@@ -118,6 +141,35 @@ public sealed class LibGLFW : IDisposable {
 
     #region Private Methods
 
+    private void Initialize() {
+#pragma warning disable IDE0058
+        NativeAPIs.SetErrorCallback(OnNativeError);
+#pragma warning restore IDE0058
+        if (!NativeAPIs.Init()) {
+#pragma warning disable IDE0058
+            NativeAPIs.SetErrorCallback(null);
+#pragma warning restore IDE0058
+            throw new Exception("Failed to initialize the native library");
+        }
+    }
+
+    /// <summary>
+    /// A method for handling errors raised by the native library.
+    /// </summary>
+    /// <param name="code">
+    /// The code for the error that was encountered.
+    /// </param>
+    /// <param name="description">
+    /// The description for the error that was encountered, if available.
+    /// </param>
+    private void OnNativeError(ErrorCode code, string? description) {
+        if (!IsCurrentInstance) {
+            return;
+        }
+        LastErrorCode = code;
+        LastErrorDescription = description;
+    }
+
     /// <summary>
     /// Dispose of this instance.
     /// </summary>
@@ -137,6 +189,9 @@ public sealed class LibGLFW : IDisposable {
                 // TODO: Dispose of managed resources
             }
             NativeAPIs.Terminate();
+#pragma warning disable IDE0058
+            NativeAPIs.SetErrorCallback(null);
+#pragma warning restore IDE0058
             Instance = null;
         }
         // TODO: Dispose of own resources
