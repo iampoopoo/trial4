@@ -14,7 +14,7 @@ public interface INativeAPIs {
     /// <param name="description">
     /// The description of the error that occurred.
     /// </param>
-    delegate void ErrorCallback(int error, string? description);
+    delegate void ErrorCallback(ErrorCode error, string? description);
 
     /// <summary>
     /// Get the version for the native library.
