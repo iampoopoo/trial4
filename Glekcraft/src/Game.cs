@@ -146,13 +146,15 @@ public class Game : IDisposable {
         MainWindowGraphics.BufferData<float>(BufferTargetARB.ArrayBuffer, new float[] {
             -0.5f, -0.5f, 0.0f,
             0.5f, -0.5f, 0.0f,
-            0.0f, 0.5f, 0.0f
+            -0.5f, 0.5f, 0.0f,
+            0.5f, 0.5f, 0.0f
         }, BufferUsageARB.StaticDraw);
 
         ebo = MainWindowGraphics.CreateBuffer();
         MainWindowGraphics.BindBuffer(BufferTargetARB.ElementArrayBuffer, ebo);
         MainWindowGraphics.BufferData<uint>(BufferTargetARB.ElementArrayBuffer, new uint[] {
-            0, 1, 2
+            0, 1, 2,
+            1, 2, 3
         }, BufferUsageARB.StaticDraw);
 
         shader = MainWindowGraphics.CreateProgram();
@@ -233,7 +235,7 @@ void main() {
         }
         MainWindowGraphics.BindBuffer(BufferTargetARB.ElementArrayBuffer, ebo);
         unsafe {
-            MainWindowGraphics.DrawElements(PrimitiveType.Triangles, 3, DrawElementsType.UnsignedInt, null);
+            MainWindowGraphics.DrawElements(PrimitiveType.Triangles, 6, DrawElementsType.UnsignedInt, null);
         }
         MainWindowGraphics.DisableVertexAttribArray(0);
         MainWindowGraphics.UseProgram(0);
