@@ -10,6 +10,18 @@ using Silk.NET.Windowing;
 /// The main game state/logic controller.
 /// </summary>
 public class Game : IDisposable {
+    #region Private Properties
+
+    private uint vao;
+
+    private uint vbo;
+
+    private uint ebo;
+
+    private uint shader;
+
+    #endregion
+
     #region Public Properties
 
     /// <summary>
@@ -126,6 +138,47 @@ public class Game : IDisposable {
         MainWindowGraphics = MainWindow.CreateOpenGL();
         MainWindow.Center();
         MainWindow.IsVisible = true;
+        vao = MainWindowGraphics.GenVertexArray();
+        MainWindowGraphics.BindVertexArray(vao);
+
+        vbo = MainWindowGraphics.CreateBuffer();
+        MainWindowGraphics.BindBuffer(BufferTargetARB.ArrayBuffer, vbo);
+        MainWindowGraphics.BufferData<float>(BufferTargetARB.ArrayBuffer, new float[] {
+            -0.5f, -0.5f, 0.0f,
+            0.5f, -0.5f, 0.0f,
+            0.0f, 0.5f, 0.0f
+        }, BufferUsageARB.StaticDraw);
+
+        ebo = MainWindowGraphics.CreateBuffer();
+        MainWindowGraphics.BindBuffer(BufferTargetARB.ElementArrayBuffer, ebo);
+        MainWindowGraphics.BufferData<uint>(BufferTargetARB.ElementArrayBuffer, new uint[] {
+            0, 1, 2
+        }, BufferUsageARB.StaticDraw);
+
+        shader = MainWindowGraphics.CreateProgram();
+        var vShader = MainWindowGraphics.CreateShader(ShaderType.VertexShader);
+        var fShader = MainWindowGraphics.CreateShader(ShaderType.FragmentShader);
+        MainWindowGraphics.ShaderSource(vShader, @"
+#version 450 core
+layout (location = 0) in vec3 aPosition;
+void main() {
+    gl_Position = vec4(aPosition, 1.0);
+}
+        ");
+        MainWindowGraphics.ShaderSource(fShader, @"
+#version 450 core
+out vec4 fragColor;
+void main() {
+    fragColor = vec4(1.0, 0.0, 0.0, 1.0);
+}
+        ");
+        MainWindowGraphics.CompileShader(vShader);
+        MainWindowGraphics.CompileShader(fShader);
+        MainWindowGraphics.AttachShader(shader, vShader);
+        MainWindowGraphics.AttachShader(shader, fShader);
+        MainWindowGraphics.LinkProgram(shader);
+        MainWindowGraphics.DeleteShader(vShader);
+        MainWindowGraphics.DeleteShader(fShader);
     }
 
     /// <summary>
@@ -170,7 +223,21 @@ public class Game : IDisposable {
         MainWindowGraphics.Viewport(MainWindow?.FramebufferSize ?? new(0, 0));
         MainWindowGraphics.ClearColor(Color.CornflowerBlue);
         MainWindowGraphics.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-        // TODO
+
+        MainWindowGraphics.BindVertexArray(vao);
+        MainWindowGraphics.UseProgram(shader);
+        MainWindowGraphics.EnableVertexAttribArray(0);
+        MainWindowGraphics.BindBuffer(BufferTargetARB.ArrayBuffer, vbo);
+        unsafe {
+            MainWindowGraphics.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), null);
+        }
+        MainWindowGraphics.BindBuffer(BufferTargetARB.ElementArrayBuffer, ebo);
+        unsafe {
+            MainWindowGraphics.DrawElements(PrimitiveType.Triangles, 3, DrawElementsType.UnsignedInt, null);
+        }
+        MainWindowGraphics.DisableVertexAttribArray(0);
+        MainWindowGraphics.UseProgram(0);
+
         //-- I don't know why C# thinks this is null...
         MainWindow?.SwapBuffers();
     }
