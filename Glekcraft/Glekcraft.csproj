@@ -17,9 +17,13 @@
         <Using Include="System" />
     </ItemGroup>
     <ItemGroup>
+        <PackageReference Include="SkiaSharp" Version="2.88.3" />
         <PackageReference Include="Silk.NET.Input" Version="2.16.0" />
         <PackageReference Include="Silk.NET.Maths" Version="2.16.0" />
         <PackageReference Include="Silk.NET.OpenGL" Version="2.16.0" />
         <PackageReference Include="Silk.NET.Windowing" Version="2.16.0" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="assets/*" CopyToOutputDirectory="Always" />
     </ItemGroup>
 </Project>
