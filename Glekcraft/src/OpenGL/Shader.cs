@@ -25,20 +25,9 @@ public class Shader : IDisposable {
     /// <returns>
     /// The new instance.
     /// </returns>
-    /// <exception cref="Exception">
-    /// Thrown if the shader fails to be created or compiled.
-    /// </exception>
     public static Shader FromSource(GL context, ShaderType type, string source) {
         var shader = new Shader(context, type);
-        try {
-            _ = shader.UploadSource(source).Compile();
-
-        } catch (Exception ex) {
-            shader.Dispose();
-            // TODO: More specific exception type
-            throw new Exception("Failed to create shader from source", ex);
-        }
-        return shader;
+        return shader.UploadSource(source).Compile();
     }
 
     /// <summary>
@@ -57,17 +46,9 @@ public class Shader : IDisposable {
     /// <returns>
     /// The new instance.
     /// </returns>
-    /// <exception cref="Exception">
-    /// Thrown if the shader fails to be created or compiled.
-    /// </exception>
     public static Shader FromSourceFile(GL context, ShaderType type, string path) {
-        try {
-            var source = File.ReadAllText(path);
-            return FromSource(context, type, source);
-        } catch (Exception ex) {
-            // TODO: More specific exception type
-            throw new Exception("Failed to create shader from source file", ex);
-        }
+        var source = File.ReadAllText(path);
+        return FromSource(context, type, source);
     }
 
     #endregion
@@ -161,10 +142,23 @@ public class Shader : IDisposable {
     /// <param name="type">
     /// The type of instance to create.
     /// </param>
+    /// <exception cref="GLException">
+    /// Thrown if the OpenGL context returns an error.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown if the OpenGL context fails to create a native shader.
+    /// </exception>
     public Shader(GL context, ShaderType type) {
         Context = context;
         Type = type;
         ID = Context.CreateShader(type);
+        var err = (ErrorCode)Context.GetError();
+        if (err != ErrorCode.NoError) {
+            throw new GLException(err, "Failed to create an OpenGL buffer");
+        }
+        if (ID == 0) {
+            throw new InvalidOperationException("Failed to create an OpenGL shader");
+        }
     }
 
     /// <summary>
@@ -270,6 +264,9 @@ public class Shader : IDisposable {
     /// <exception cref="GLException">
     /// Thrown if the OpenGL context reports an error.
     /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown if the OpenGL context fails to compile the shader.
+    /// </exception>
     /// <seealso cref="IsCompiled" />
     /// <seealso cref="InfoLog" />
     public Shader Compile() {
@@ -286,6 +283,14 @@ public class Shader : IDisposable {
         var err = (ErrorCode)Context.GetError();
         if (err != ErrorCode.NoError) {
             throw new GLException(err, "Failed to compile an OpenGL shader");
+        }
+        if (!IsCompiled) {
+            var infoLog = InfoLog;
+            if (string.IsNullOrWhiteSpace(infoLog)) {
+                throw new InvalidOperationException("Failed to compile an OpenGL shader");
+            } else {
+                throw new InvalidOperationException($"Failed to compile an OpenGL shader: {infoLog}");
+            }
         }
         return this;
     }
