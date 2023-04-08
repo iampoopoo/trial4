@@ -1,0 +1,117 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "dotnet:restore",
+            "detail": "Run the 'dotnet restore' command.",
+            "icon": {
+                "color": "terminal.ansiWhite",
+                "id": "desktop-download"
+            },
+            "dependsOn": [],
+            "dependsOrder": "sequence",
+            "group": "none",
+            "isBackground": false,
+            "type": "shell",
+            "command": "dotnet",
+            "args": [
+                "restore"
+            ],
+            "hide": true,
+            "runOptions": {
+                "instanceLimit": 1,
+                "reevaluateOnRerun": true,
+                "runOn": "folderOpen"
+            },
+            "presentation": {
+                "echo": false,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": false,
+                "clear": false
+            },
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "dotnet:build",
+            "detail": "Run the 'dotnet build' command.",
+            "icon": {
+                "color": "terminal.ansiWhite",
+                "id": "gather"
+            },
+            "dependsOn": [
+                "dotnet:restore"
+            ],
+            "dependsOrder": "sequence",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "isBackground": false,
+            "type": "shell",
+            "command": "dotnet",
+            "args": [
+                "build",
+                "--no-restore",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "hide": false,
+            "runOptions": {
+                "instanceLimit": 1,
+                "reevaluateOnRerun": true,
+                "runOn": "default"
+            },
+            "presentation": {
+                "echo": false,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": false,
+                "clear": false
+            },
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "dotnet:test",
+            "detail": "Run the 'dotnet test' command.",
+            "icon": {
+                "color": "terminal.ansiWhite",
+                "id": "debug-alt"
+            },
+            "dependsOn": [
+                "dotnet:build"
+            ],
+            "dependsOrder": "sequence",
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "isBackground": false,
+            "type": "shell",
+            "command": "dotnet",
+            "args": [
+                "test",
+                "--no-build",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "hide": false,
+            "runOptions": {
+                "instanceLimit": 1,
+                "reevaluateOnRerun": true,
+                "runOn": "default"
+            },
+            "presentation": {
+                "echo": false,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": false,
+                "clear": false
+            },
+            "problemMatcher": "$msCompile"
+        }
+    ]
+}
