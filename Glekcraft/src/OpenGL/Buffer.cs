@@ -134,7 +134,7 @@ public class Buffer : IDisposable {
         Context.BindBuffer(Target, ID);
         var err = (ErrorCode)Context.GetError();
         if (err != ErrorCode.NoError) {
-            throw new Exception("Failed to bind an OpenGL buffer");
+            throw new GLException(err, "Failed to bind an OpenGL buffer");
         }
         return this;
     }
@@ -167,7 +167,7 @@ public class Buffer : IDisposable {
         Context.BindBuffer(Target, 0);
         var err = (ErrorCode)Context.GetError();
         if (err != ErrorCode.NoError) {
-            throw new Exception("Failed to unbind an OpenGL buffer");
+            throw new GLException(err, "Failed to unbind an OpenGL buffer");
         }
         return this;
     }
@@ -209,7 +209,7 @@ public class Buffer : IDisposable {
         Context.BufferData<byte>(Target, sizeBytes, Array.Empty<byte>(), usage);
         var err = (ErrorCode)Context.GetError();
         if (err != ErrorCode.NoError) {
-            throw new Exception("Failed to allocate space for an OpenGL buffer");
+            throw new GLException(err, "Failed to allocate space for an OpenGL buffer");
         }
         SizeBytes = sizeBytes;
         UsageHint = usage;
@@ -229,7 +229,7 @@ public class Buffer : IDisposable {
         Context.BufferData<T0>(Target, data, usage);
         var err = (ErrorCode)Context.GetError();
         if (err != ErrorCode.NoError) {
-            throw new Exception("Failed to upload data to an OpenGL buffer");
+            throw new GLException(err, "Failed to upload data to an OpenGL buffer");
         }
         SizeBytes = (nuint)(data.Length * Marshal.SizeOf<T0>());
         UsageHint = usage;
@@ -249,7 +249,7 @@ public class Buffer : IDisposable {
         Context.BufferData(Target, data, usage);
         var err = (ErrorCode)Context.GetError();
         if (err != ErrorCode.NoError) {
-            throw new Exception("Failed to upload data to an OpenGL buffer");
+            throw new GLException(err, "Failed to upload data to an OpenGL buffer");
         }
         SizeBytes = (nuint)(data.Length * Marshal.SizeOf<T0>());
         UsageHint = usage;
