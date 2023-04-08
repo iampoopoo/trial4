@@ -35,6 +35,7 @@ public class Buffer : IDisposable {
     /// <summary>
     /// Whether this instance has been disposed.
     /// </summary>
+    /// <seealso cref="Dispose" />
     public bool IsDisposed {
         get;
         private set;
@@ -49,6 +50,8 @@ public class Buffer : IDisposable {
     /// <summary>
     /// Whether this instance is bound to its target.
     /// </summary>
+    /// <seealso cref="Bind" />
+    /// <seealso cref="Unbind" />
     public bool IsBound {
         get {
             if (IsDisposed || !IsValid) {
@@ -67,6 +70,8 @@ public class Buffer : IDisposable {
     /// <summary>
     /// The amount of VRAM allocated to this instance, in bytes.
     /// </summary>
+    /// <seealso cref="Allocate" />
+    /// <seealso cref="UploadData" />
     public nuint? SizeBytes {
         get;
         private set;
@@ -75,6 +80,8 @@ public class Buffer : IDisposable {
     /// <summary>
     /// The usage hint this instance was given when it was allocated.
     /// </summary>
+    /// <seealso cref="Allocate" />
+    /// <seealso cref="UploadData" />
     public BufferUsageARB? UsageHint {
         get;
         private set;
@@ -95,10 +102,13 @@ public class Buffer : IDisposable {
     /// </param>
     public Buffer(GL context, BufferTargetARB target) {
         Context = context;
-        ID = Context.GenBuffer();
         Target = target;
+        ID = Context.GenBuffer();
     }
 
+    /// <summary>
+    /// The finalizer.
+    /// </summary>
     ~Buffer() =>
         Dispose(false);
 
@@ -118,9 +128,10 @@ public class Buffer : IDisposable {
     /// <exception cref="InvalidOperationException">
     /// Thrown if this instance is invalid.
     /// </exception>
-    /// <exception cref="Exception">
+    /// <exception cref="GLException">
     /// Thrown if the OpenGL context returns an error.
     /// </exception>
+    /// <seealso cref="IsBound" />
     public Buffer Bind() {
         if (IsDisposed) {
             throw new ObjectDisposedException(nameof(Buffer), "Cannot bind a disposed OpenGL buffer");
@@ -151,9 +162,10 @@ public class Buffer : IDisposable {
     /// <exception cref="InvalidOperationException">
     /// Thrown if this instance is invalid.
     /// </exception>
-    /// <exception cref="Exception">
+    /// <exception cref="GLException">
     /// Thrown if the OpenGL context returns an error.
     /// </exception>
+    /// <seealso cref="IsBound" />
     public Buffer Unbind() {
         if (IsDisposed) {
             throw new ObjectDisposedException(nameof(Buffer), "Cannot unbind a disposed OpenGL buffer");
@@ -193,9 +205,11 @@ public class Buffer : IDisposable {
     /// <exception cref="InvalidOperationException">
     /// Thrown if this instance is not bound to its target.
     /// </exception>
-    /// <exception cref="Exception">
+    /// <exception cref="GLException">
     /// Thrown if the OpenGL context returns an error.
     /// </exception>
+    /// <seealso cref="SizeBytes" />
+    /// <seealso cref="UsageHint" />
     public Buffer Allocate(nuint sizeBytes, BufferUsageARB usage) {
         if (IsDisposed) {
             throw new ObjectDisposedException(nameof(Buffer), "Cannot allocate space for a disposed OpenGL buffer");
@@ -216,6 +230,40 @@ public class Buffer : IDisposable {
         return this;
     }
 
+    /// <summary>
+    /// Upload data into this instance.
+    /// </summary>
+    /// <remarks>
+    /// If space in VRAM has not been allocated for this instance it will be
+    /// automatically allocated. If space has been allocated but is not the
+    /// same size as the data being uploaded it will be reallocated.
+    /// </remarks>
+    /// <param name="data">
+    /// The data to upload.
+    /// </param>
+    /// <param name="usage">
+    /// The usage hint to apply to this instance.
+    /// </param>
+    /// <typeparam name="T0">
+    /// The type of the data to upload.
+    /// </typeparam>
+    /// <returns>
+    /// This instance for chaining.
+    /// </returns>
+    /// <exception cref="ObjectDisposedException">
+    /// Thrown if this instance has been disposed.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown if this instance is invalid.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown if this instance is not bound to its target.
+    /// </exception>
+    /// <exception cref="GLException">
+    /// Thrown if the OpenGL context returns an error.
+    /// </exception>
+    /// <seealso cref="SizeBytes" />
+    /// <seealso cref="UsageHint" />
     public Buffer UploadData<T0>(in T0[] data, BufferUsageARB usage) where T0 : unmanaged {
         if (IsDisposed) {
             throw new ObjectDisposedException(nameof(Buffer), "Cannot upload data to a disposed OpenGL buffer");
@@ -236,6 +284,40 @@ public class Buffer : IDisposable {
         return this;
     }
 
+    /// <summary>
+    /// Upload data into this instance.
+    /// </summary>
+    /// <remarks>
+    /// If space in VRAM has not been allocated for this instance it will be
+    /// automatically allocated. If space has been allocated but is not the
+    /// same size as the data being uploaded it will be reallocated.
+    /// </remarks>
+    /// <param name="data">
+    /// The data to upload.
+    /// </param>
+    /// <param name="usage">
+    /// The usage hint to apply to this instance.
+    /// </param>
+    /// <typeparam name="T0">
+    /// The type of the data to upload.
+    /// </typeparam>
+    /// <returns>
+    /// This instance for chaining.
+    /// </returns>
+    /// <exception cref="ObjectDisposedException">
+    /// Thrown if this instance has been disposed.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown if this instance is invalid.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown if this instance is not bound to its target.
+    /// </exception>
+    /// <exception cref="GLException">
+    /// Thrown if the OpenGL context returns an error.
+    /// </exception>
+    /// <seealso cref="SizeBytes" />
+    /// <seealso cref="UsageHint" />
     public Buffer UploadData<T0>(ReadOnlySpan<T0> data, BufferUsageARB usage) where T0 : unmanaged {
         if (IsDisposed) {
             throw new ObjectDisposedException(nameof(Buffer), "Cannot upload data to a disposed OpenGL buffer");
