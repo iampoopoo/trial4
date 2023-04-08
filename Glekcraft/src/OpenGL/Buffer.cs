@@ -100,10 +100,23 @@ public class Buffer : IDisposable {
     /// <param name="target">
     /// The target this instance will bind to.
     /// </param>
+    /// <exception cref="GLException">
+    /// Thrown if the OpenGL context returns an error.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown if the OpenGL context fails to create a native buffer.
+    /// </exception>
     public Buffer(GL context, BufferTargetARB target) {
         Context = context;
         Target = target;
         ID = Context.GenBuffer();
+        var err = (ErrorCode)Context.GetError();
+        if (err != ErrorCode.NoError) {
+            throw new GLException(err, "Failed to create an OpenGL buffer");
+        }
+        if (ID == 0) {
+            throw new InvalidOperationException("Failed to create an OpenGL buffer");
+        }
     }
 
     /// <summary>
