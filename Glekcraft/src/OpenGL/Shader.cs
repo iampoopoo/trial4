@@ -320,7 +320,7 @@ public class Shader : IDisposable {
         if (IsDisposed) {
             return;
         }
-        if (managed) {
+        if (managed && IsValid) {
             Context.DeleteShader(ID);
         }
         ID = 0;

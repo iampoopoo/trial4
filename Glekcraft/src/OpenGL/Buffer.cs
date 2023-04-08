@@ -376,7 +376,7 @@ public class Buffer : IDisposable {
         if (IsDisposed) {
             return;
         }
-        if (managed) {
+        if (managed && IsValid) {
             Context.DeleteBuffer(ID);
         }
         ID = 0;
