@@ -154,7 +154,7 @@ public class Shader : IDisposable {
         ID = Context.CreateShader(type);
         var err = (ErrorCode)Context.GetError();
         if (err != ErrorCode.NoError) {
-            throw new GLException(err, "Failed to create an OpenGL buffer");
+            throw new GLException(err, "Failed to create an OpenGL shader");
         }
         if (ID == 0) {
             throw new InvalidOperationException("Failed to create an OpenGL shader");
