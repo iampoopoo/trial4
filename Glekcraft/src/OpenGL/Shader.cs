@@ -46,10 +46,8 @@ public class Shader : IDisposable {
     /// <returns>
     /// The new instance.
     /// </returns>
-    public static Shader FromSourceFile(GL context, ShaderType type, string path) {
-        var source = File.ReadAllText(path);
-        return FromSource(context, type, source);
-    }
+    public static Shader FromSourceFile(GL context, ShaderType type, string path) =>
+        FromSource(context, type, File.ReadAllText(path));
 
     #endregion
 
