@@ -87,7 +87,7 @@ public class ShaderProgram : IDisposable {
             if (IsDisposed || !IsValid) {
                 return null;
             }
-            Context.GetShaderInfoLog(ID, out var log);
+            Context.GetProgramInfoLog(ID, out var log);
             return log;
         }
     }
