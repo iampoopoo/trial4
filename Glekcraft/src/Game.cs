@@ -17,15 +17,15 @@ public class Game : IDisposable {
 
     private uint vao;
 
-    private uint vbo;
+    private OpenGL.Buffer? vbo;
 
-    private uint cbo;
+    private OpenGL.Buffer? cbo;
 
-    private uint uvbo;
+    private OpenGL.Buffer? uvbo;
 
-    private uint ebo;
+    private OpenGL.Buffer? ebo;
 
-    private uint shader;
+    private OpenGL.ShaderProgram? shader;
 
     private uint texture;
 
@@ -147,47 +147,44 @@ public class Game : IDisposable {
         MainWindowGraphics = MainWindow.CreateOpenGL();
         MainWindow.Center();
         MainWindow.IsVisible = true;
+        MainWindow.MakeCurrent();
         vao = MainWindowGraphics.GenVertexArray();
+        if (vao == 0) {
+            throw new InvalidOperationException("Failed to generate vertex array");
+        }
         MainWindowGraphics.BindVertexArray(vao);
 
-        vbo = MainWindowGraphics.CreateBuffer();
-        MainWindowGraphics.BindBuffer(BufferTargetARB.ArrayBuffer, vbo);
-        MainWindowGraphics.BufferData<float>(BufferTargetARB.ArrayBuffer, new float[] {
+        vbo = new OpenGL.Buffer(MainWindowGraphics, BufferTargetARB.ArrayBuffer);
+        _ = vbo.Bind().UploadData(new float[] {
             -0.5f, -0.5f, 0.0f,
             0.5f, -0.5f, 0.0f,
             -0.5f, 0.5f, 0.0f,
             0.5f, 0.5f, 0.0f
         }, BufferUsageARB.StaticDraw);
 
-        cbo = MainWindowGraphics.CreateBuffer();
-        MainWindowGraphics.BindBuffer(BufferTargetARB.ArrayBuffer, cbo);
-        MainWindowGraphics.BufferData<float>(BufferTargetARB.ArrayBuffer, new float[] {
+        cbo = new OpenGL.Buffer(MainWindowGraphics, BufferTargetARB.ArrayBuffer);
+        _ = cbo.Bind().UploadData(new float[] {
             1.0f, 1.0f, 1.0f,
             1.0f, 1.0f, 1.0f,
             1.0f, 1.0f, 1.0f,
             1.0f, 1.0f, 1.0f
         }, BufferUsageARB.StaticDraw);
 
-        uvbo = MainWindowGraphics.CreateBuffer();
-        MainWindowGraphics.BindBuffer(BufferTargetARB.ArrayBuffer, uvbo);
-        MainWindowGraphics.BufferData<float>(BufferTargetARB.ArrayBuffer, new float[] {
+        uvbo = new OpenGL.Buffer(MainWindowGraphics, BufferTargetARB.ArrayBuffer);
+        _ = uvbo.Bind().UploadData(new float[] {
             0.0f, 1.0f,
             1.0f, 1.0f,
             0.0f, 0.0f,
             1.0f, 0.0f
         }, BufferUsageARB.StaticDraw);
 
-        ebo = MainWindowGraphics.CreateBuffer();
-        MainWindowGraphics.BindBuffer(BufferTargetARB.ElementArrayBuffer, ebo);
-        MainWindowGraphics.BufferData<uint>(BufferTargetARB.ElementArrayBuffer, new uint[] {
+        ebo = new OpenGL.Buffer(MainWindowGraphics, BufferTargetARB.ElementArrayBuffer);
+        _ = ebo.Bind().UploadData(new uint[] {
             0, 1, 2,
             1, 2, 3
         }, BufferUsageARB.StaticDraw);
 
-        shader = MainWindowGraphics.CreateProgram();
-        var vShader = MainWindowGraphics.CreateShader(ShaderType.VertexShader);
-        var fShader = MainWindowGraphics.CreateShader(ShaderType.FragmentShader);
-        MainWindowGraphics.ShaderSource(vShader, @"
+        shader = OpenGL.ShaderProgram.FromSources(MainWindowGraphics, @"
 #version 450 core
 layout (location = 0) in vec3 aPosition;
 layout (location = 1) in vec3 aColor;
@@ -198,30 +195,22 @@ void main() {
     vColor = aColor;
     vUV = aUV;
     gl_Position = vec4(aPosition, 1.0);
-}
-        ");
-        MainWindowGraphics.ShaderSource(fShader, @"
+}", @"
 #version 450 core
 in vec3 vColor;
 in vec2 vUV;
 out vec4 fragColor;
 uniform sampler2D uTexture;
 void main() {
-    fragColor = vec4(texture2D(uTexture, vUV).rgb * vColor.rgb * 1.0, 1.0);
-}
-        ");
-        MainWindowGraphics.CompileShader(vShader);
-        MainWindowGraphics.CompileShader(fShader);
-        MainWindowGraphics.AttachShader(shader, vShader);
-        MainWindowGraphics.AttachShader(shader, fShader);
-        MainWindowGraphics.LinkProgram(shader);
-
-        Console.WriteLine(MainWindowGraphics.GetShaderInfoLog(fShader));
-
-        MainWindowGraphics.DeleteShader(vShader);
-        MainWindowGraphics.DeleteShader(fShader);
+    vec4 tColor = texture(uTexture, vUV);
+    vec4 fColor = vec4(vColor, 1.0);
+    fragColor = tColor * fColor;
+}");
 
         var assemblyLocation = Path.GetDirectoryName(Path.GetFullPath(Assembly.GetExecutingAssembly().Location));
+        if (assemblyLocation == null) {
+            throw new InvalidOperationException("Cannot locate executing assembly");
+        }
         using var stream = File.OpenRead(Path.Combine(assemblyLocation, "assets/texture.png"));
         var img = SKBitmap.Decode(stream);
         stream.Close();
@@ -240,8 +229,12 @@ void main() {
     /// <summary>
     /// The callback for when the main window is requesting to closing.
     /// </summary>
-    private void OnWindowClosing() =>
-        Dispose();
+    private void OnWindowClosing() {
+        if (MainWindow == null) {
+            return;
+        }
+        MainWindow.IsClosing = true;
+    }
 
     /// <summary>
     /// The callback for when the main window is updated.
@@ -258,7 +251,7 @@ void main() {
         }
         foreach (var kb in MainWindowInput.Keyboards) {
             if (kb.IsKeyPressed(Key.Escape)) {
-                MainWindow?.Close();
+                MainWindow.IsClosing = true;
             }
         }
     }
@@ -276,7 +269,8 @@ void main() {
         if (MainWindowGraphics == null) {
             throw new InvalidOperationException("Main game window graphics is null");
         }
-        MainWindowGraphics.Viewport(MainWindow?.FramebufferSize ?? new(0, 0));
+        MainWindow.MakeCurrent();
+        MainWindowGraphics.Viewport(MainWindow.FramebufferSize);
         MainWindowGraphics.ClearColor(System.Drawing.Color.CornflowerBlue);
         MainWindowGraphics.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
@@ -285,36 +279,35 @@ void main() {
         MainWindowGraphics.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
         MainWindowGraphics.BindVertexArray(vao);
-        MainWindowGraphics.UseProgram(shader);
+        _ = shader?.Activate();
         MainWindowGraphics.EnableVertexAttribArray(0);
         MainWindowGraphics.EnableVertexAttribArray(1);
         MainWindowGraphics.EnableVertexAttribArray(2);
         MainWindowGraphics.ActiveTexture(TextureUnit.Texture0);
         MainWindowGraphics.BindTexture(TextureTarget.Texture2D, texture);
-        MainWindowGraphics.Uniform1(MainWindowGraphics.GetUniformLocation(shader, "uTexture"), 0);
-        MainWindowGraphics.BindBuffer(BufferTargetARB.ArrayBuffer, vbo);
+        MainWindowGraphics.Uniform1(MainWindowGraphics.GetUniformLocation(shader?.ID ?? 0, "uTexture"), 0);
+        _ = vbo?.Bind();
         unsafe {
             MainWindowGraphics.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), null);
         }
-        MainWindowGraphics.BindBuffer(BufferTargetARB.ArrayBuffer, cbo);
+        _ = cbo?.Bind();
         unsafe {
             MainWindowGraphics.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), null);
         }
-        MainWindowGraphics.BindBuffer(BufferTargetARB.ArrayBuffer, uvbo);
+        _ = uvbo?.Bind();
         unsafe {
             MainWindowGraphics.VertexAttribPointer(2, 2, VertexAttribPointerType.Float, false, 2 * sizeof(float), null);
         }
-        MainWindowGraphics.BindBuffer(BufferTargetARB.ElementArrayBuffer, ebo);
+        _ = ebo?.Bind();
         unsafe {
             MainWindowGraphics.DrawElements(PrimitiveType.Triangles, 6, DrawElementsType.UnsignedInt, null);
         }
         MainWindowGraphics.DisableVertexAttribArray(2);
         MainWindowGraphics.DisableVertexAttribArray(1);
         MainWindowGraphics.DisableVertexAttribArray(0);
-        MainWindowGraphics.UseProgram(0);
+        _ = shader?.Deactivate();
 
-        //-- I don't know why C# thinks this is null...
-        MainWindow?.SwapBuffers();
+        MainWindow.SwapBuffers();
     }
 
     /// <summary>
