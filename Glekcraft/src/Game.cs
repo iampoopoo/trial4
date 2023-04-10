@@ -212,7 +212,7 @@ void main() {
         if (assemblyLocation == null) {
             throw new InvalidOperationException("Cannot locate executing assembly");
         }
-        using var stream = File.OpenRead(Path.Combine(assemblyLocation, "assets/texture.png"));
+        using var stream = File.OpenRead(Path.Combine(assemblyLocation, "assets/opengl.png"));
         var img = SKBitmap.Decode(stream);
         stream.Close();
         var imgData = img.Bytes;
