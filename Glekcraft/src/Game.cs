@@ -89,9 +89,10 @@ public class Game : IDisposable {
         if (MainWindow != null) {
             throw new InvalidOperationException("Instance is already initialized");
         }
+
         var graphicsOptions = GraphicsAPI.Default;
         graphicsOptions.API = ContextAPI.OpenGL;
-        graphicsOptions.Version = new(4, 5);
+        graphicsOptions.Version = new(4, 1);
         graphicsOptions.Flags = ContextFlags.ForwardCompatible;
         graphicsOptions.Profile = ContextProfile.Core;
         var windowOptions = WindowOptions.Default;
@@ -185,7 +186,7 @@ public class Game : IDisposable {
         }, BufferUsageARB.StaticDraw);
 
         shader = OpenGL.ShaderProgram.FromSources(MainWindowGraphics, @"
-#version 450 core
+#version 410 core
 layout (location = 0) in vec3 aPosition;
 layout (location = 1) in vec3 aColor;
 layout (location = 2) in vec2 aUV;
@@ -196,7 +197,7 @@ void main() {
     vUV = aUV;
     gl_Position = vec4(aPosition, 1.0);
 }", @"
-#version 450 core
+#version 410 core
 in vec3 vColor;
 in vec2 vUV;
 out vec4 fragColor;
