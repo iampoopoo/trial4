@@ -92,7 +92,7 @@ public class Game : IDisposable {
 
         var graphicsOptions = GraphicsAPI.Default;
         graphicsOptions.API = ContextAPI.OpenGL;
-        graphicsOptions.Version = new(4, 1);
+        graphicsOptions.Version = new(4, 3);
         graphicsOptions.Flags = ContextFlags.ForwardCompatible;
         graphicsOptions.Profile = ContextProfile.Core;
         var windowOptions = WindowOptions.Default;
