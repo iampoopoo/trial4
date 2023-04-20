@@ -13,7 +13,7 @@ public class GLCreateFailedException : Exception {
     /// <summary>
     /// The error code returned from the OpenGL rendering context.
     /// </summary>
-    public string ResourceType { get; }
+    public GLObjectType GLType { get; }
 
     #endregion
 
@@ -22,28 +22,28 @@ public class GLCreateFailedException : Exception {
     /// <summary>
     /// Create a new instance.
     /// </summary>
-    /// <param name="resourceType">
+    /// <param name="glType">
     /// The error code returned from the OpenGL rendering context.
     /// </param>
-    public GLCreateFailedException(string resourceType) : base($"Failed to create OpenGL resource: {resourceType}") =>
-        ResourceType = resourceType;
+    public GLCreateFailedException(GLObjectType glType) : base($"Failed to create OpenGL resource: {glType}") =>
+        GLType = glType;
 
     /// <summary>
     /// Create a new instance.
     /// </summary>
-    /// <param name="resourceType">
+    /// <param name="glType">
     /// The error code returned from the OpenGL rendering context.
     /// </param>
     /// <param name="message">
     /// A message describing what went wrong.
     /// </param>
-    public GLCreateFailedException(string resourceType, string? message) : base(message) =>
-        ResourceType = resourceType;
+    public GLCreateFailedException(GLObjectType glType, string? message) : base(message) =>
+        GLType = glType;
 
     /// <summary>
     /// Create a new instance.
     /// </summary>
-    /// <param name="resourceType">
+    /// <param name="glType">
     /// The error code returned from the OpenGL rendering context.
     /// </param>
     /// <param name="message">
@@ -52,8 +52,8 @@ public class GLCreateFailedException : Exception {
     /// <param name="inner">
     /// The inner exception.
     /// </param>
-    public GLCreateFailedException(string resourceType, string? message, Exception? inner) : base(message, inner) =>
-        ResourceType = resourceType;
+    public GLCreateFailedException(GLObjectType glType, string? message, Exception? inner) : base(message, inner) =>
+        GLType = glType;
 
     /// <summary>
     /// The deserialization constructor.
@@ -65,7 +65,7 @@ public class GLCreateFailedException : Exception {
     /// The streaming context.
     /// </param>
     protected GLCreateFailedException(SerializationInfo info, StreamingContext context) : base(info, context) =>
-        ResourceType = info.GetString("ResourceType") ?? throw new ArgumentNullException(nameof(info), "SerializationInfo does not contain a value for ResourceType");
+        GLType = (GLObjectType)(info.GetValue("GlType", typeof(GLObjectType)) ?? throw new ArgumentNullException(nameof(info), "SerializationInfo does not contain a value for GLType"));
 
     #endregion
 
@@ -81,7 +81,7 @@ public class GLCreateFailedException : Exception {
     /// The streaming context.
     /// </param>
     public override void GetObjectData(SerializationInfo info, StreamingContext context) {
-        info.AddValue("ResourceType", ResourceType);
+        info.AddValue("GlType", GLType, typeof(GLObjectType));
         base.GetObjectData(info, context);
     }
 
