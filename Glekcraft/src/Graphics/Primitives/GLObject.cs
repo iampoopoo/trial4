@@ -21,7 +21,7 @@ public abstract class GLObject : IDisposable {
     /// <summary>
     /// The OpenGL ID of the object wrapped by this instance.
     /// </summary>
-    public uint ID { get; private set; }
+    public uint ID { get; protected set; }
 
     /// <summary>
     /// Whether this instance has been disposed.
