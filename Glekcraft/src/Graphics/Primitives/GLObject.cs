@@ -9,6 +9,11 @@ public abstract class GLObject : IDisposable {
     #region Public Properties
 
     /// <summary>
+    /// The type of OpenGL object wrapped by this instance.
+    /// </summary>
+    public abstract GLObjectType GLType { get; }
+
+    /// <summary>
     /// The OpenGL rendering context this instance belongs to.
     /// </summary>
     public GL Context { get; }
