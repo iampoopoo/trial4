@@ -2,8 +2,6 @@ namespace Glekcraft.Graphics.Primitives.Exceptions;
 
 using System.Runtime.Serialization;
 
-using Silk.NET.OpenGL;
-
 /// <summary>
 /// An exception that is thrown when an OpenGL shader fails to compile.
 /// </summary>
