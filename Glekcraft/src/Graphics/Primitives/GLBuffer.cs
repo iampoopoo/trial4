@@ -4,6 +4,8 @@ using System.Runtime.InteropServices;
 
 using Silk.NET.OpenGL;
 
+using Glekcraft.Graphics.Primitives.Exceptions;
+
 /// <summary>
 /// An OpenGL buffer resource.
 /// </summary>
@@ -88,7 +90,7 @@ public class GLBuffer : IDisposable {
     /// <param name="target">
     /// The target this instance will bind to.
     /// </param>
-    /// <exception cref="GLCreateFailedException">
+    /// <exception cref="GLObjectCreationFailedException">
     /// Thrown if the OpenGL rendering context fails to create the resource.
     /// </exception>
     public GLBuffer(GL context, BufferTargetARB target) {
@@ -96,7 +98,7 @@ public class GLBuffer : IDisposable {
         Target = target;
         ID = Context.GenBuffer();
         if (!IsValid) {
-            throw new GLCreateFailedException(GLObjectType.Buffer);
+            throw new GLObjectCreationFailedException(GLObjectType.Buffer, (ErrorCode)Context.GetError());
         }
     }
 
@@ -119,7 +121,7 @@ public class GLBuffer : IDisposable {
     /// <exception cref="InvalidOperationException">
     /// Thrown if this instance does not wrap a valid resource.
     /// </exception>
-    /// <exception cref="GLException">
+    /// <exception cref="GLOperationException">
     /// Thrown if the OpenGL rendering context fails to bind the resource.
     /// </exception>
     public void Bind() {
@@ -132,7 +134,7 @@ public class GLBuffer : IDisposable {
         Context.BindBuffer(Target, ID);
         var err = (ErrorCode)Context.GetError();
         if (err != ErrorCode.NoError) {
-            throw new GLException(err);
+            throw new GLOperationException(err);
         }
     }
 
@@ -154,7 +156,7 @@ public class GLBuffer : IDisposable {
     /// <exception cref="InvalidOperationException">
     /// Thrown if this instance is not bound to its target.
     /// </exception>
-    /// <exception cref="GLException">
+    /// <exception cref="GLOperationException">
     /// Thrown if the OpenGL rendering context fails to bind the resource.
     /// </exception>
     public void Allocate(uint sizeBytes, BufferUsageARB usageHint = BufferUsageARB.StaticDraw) {
@@ -170,7 +172,7 @@ public class GLBuffer : IDisposable {
         Context.BufferData(Target, sizeBytes, 0, usageHint);
         var err = (ErrorCode)Context.GetError();
         if (err != ErrorCode.NoError) {
-            throw new GLException(err);
+            throw new GLOperationException(err);
         }
         SizeBytes = sizeBytes;
         UsageHint = usageHint;
@@ -197,7 +199,7 @@ public class GLBuffer : IDisposable {
     /// <exception cref="InvalidOperationException">
     /// Thrown if this instance is not bound to its target.
     /// </exception>
-    /// <exception cref="GLException">
+    /// <exception cref="GLOperationException">
     /// Thrown if the OpenGL rendering context fails to bind the resource.
     /// </exception>
     public void UploadData<T0>(in T0[] data, BufferUsageARB usageHint = BufferUsageARB.StaticDraw) where T0 : unmanaged {
@@ -213,7 +215,7 @@ public class GLBuffer : IDisposable {
         Context.BufferData<T0>(Target, data, usageHint);
         var err = (ErrorCode)Context.GetError();
         if (err != ErrorCode.NoError) {
-            throw new GLException(err);
+            throw new GLOperationException(err);
         }
         SizeBytes = (uint)(data.Length * Marshal.SizeOf<T0>());
         UsageHint = usageHint;
@@ -240,7 +242,7 @@ public class GLBuffer : IDisposable {
     /// <exception cref="InvalidOperationException">
     /// Thrown if this instance is not bound to its target.
     /// </exception>
-    /// <exception cref="GLException">
+    /// <exception cref="GLOperationException">
     /// Thrown if the OpenGL rendering context fails to bind the resource.
     /// </exception>
     public void UploadData<T0>(ReadOnlySpan<T0> data, BufferUsageARB usageHint = BufferUsageARB.StaticDraw) where T0 : unmanaged {
@@ -256,7 +258,7 @@ public class GLBuffer : IDisposable {
         Context.BufferData(Target, data, usageHint);
         var err = (ErrorCode)Context.GetError();
         if (err != ErrorCode.NoError) {
-            throw new GLException(err);
+            throw new GLOperationException(err);
         }
         SizeBytes = (uint)(data.Length * Marshal.SizeOf<T0>());
         UsageHint = usageHint;
@@ -292,7 +294,7 @@ public class GLBuffer : IDisposable {
     /// <paramref name="data" /> is greater than or equal to the size of the
     /// existing allocation.
     /// </exception>
-    /// <exception cref="GLException">
+    /// <exception cref="GLOperationException">
     /// Thrown if the OpenGL rendering context fails to bind the resource.
     /// </exception>
     public void UploadSubData<T0>(in T0[] data, int offset = 0) where T0 : unmanaged {
@@ -314,7 +316,7 @@ public class GLBuffer : IDisposable {
         Context.BufferSubData<T0>(Target, offset, data);
         var err = (ErrorCode)Context.GetError();
         if (err != ErrorCode.NoError) {
-            throw new GLException(err);
+            throw new GLOperationException(err);
         }
     }
 
@@ -348,7 +350,7 @@ public class GLBuffer : IDisposable {
     /// <paramref name="data" /> is greater than or equal to the size of the
     /// existing allocation.
     /// </exception>
-    /// <exception cref="GLException">
+    /// <exception cref="GLOperationException">
     /// Thrown if the OpenGL rendering context fails to bind the resource.
     /// </exception>
     public void UploadSubData<T0>(ReadOnlySpan<T0> data, int offset = 0) where T0 : unmanaged {
@@ -370,7 +372,7 @@ public class GLBuffer : IDisposable {
         Context.BufferSubData(Target, offset, data);
         var err = (ErrorCode)Context.GetError();
         if (err != ErrorCode.NoError) {
-            throw new GLException(err);
+            throw new GLOperationException(err);
         }
     }
 

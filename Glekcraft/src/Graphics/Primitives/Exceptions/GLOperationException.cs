@@ -1,19 +1,18 @@
-namespace Glekcraft.Graphics.Primitives;
+namespace Glekcraft.Graphics.Primitives.Exceptions;
 
 using System.Runtime.Serialization;
 
 using Silk.NET.OpenGL;
 
 /// <summary>
-/// An exception that represents the OpenGL rendering context returning an error
-/// from the <c>glGetError</c> function.
+/// An exception that is thrown when an OpenGL operation fails.
 /// </summary>
 [Serializable]
-public class GLException : Exception {
+public class GLOperationException : Exception {
     #region Public Properties
 
     /// <summary>
-    /// The error code returned from the OpenGL rendering context.
+    /// The error code returned by the failed operation.
     /// </summary>
     public ErrorCode ErrorCode { get; }
 
@@ -25,65 +24,65 @@ public class GLException : Exception {
     /// Create a new instance.
     /// </summary>
     /// <param name="errorCode">
-    /// The error code returned from the OpenGL rendering context.
+    /// The error code returned by the failed operation.
     /// </param>
-    public GLException(ErrorCode errorCode) : base($"OpenGL error: {errorCode}") =>
+    public GLOperationException(ErrorCode errorCode) : base($"OpenGL operation failed: {errorCode}") =>
         ErrorCode = errorCode;
 
     /// <summary>
     /// Create a new instance.
     /// </summary>
     /// <param name="errorCode">
-    /// The error code returned from the OpenGL rendering context.
+    /// The error code returned by the failed operation.
     /// </param>
     /// <param name="message">
-    /// A message describing what went wrong.
+    /// The message to include in the exception.
     /// </param>
-    public GLException(ErrorCode errorCode, string? message) : base(message) =>
+    public GLOperationException(ErrorCode errorCode, string? message) : base(message) =>
         ErrorCode = errorCode;
 
     /// <summary>
     /// Create a new instance.
     /// </summary>
     /// <param name="errorCode">
-    /// The error code returned from the OpenGL rendering context.
+    /// The error code returned by the failed operation.
     /// </param>
     /// <param name="message">
-    /// A message describing what went wrong.
+    /// The message to include in the exception.
     /// </param>
     /// <param name="inner">
     /// The inner exception.
     /// </param>
-    public GLException(ErrorCode errorCode, string? message, Exception? inner) : base(message, inner) =>
+    public GLOperationException(ErrorCode errorCode, string? message, Exception? inner) : base(message, inner) =>
         ErrorCode = errorCode;
 
     /// <summary>
-    /// The deserialization constructor.
+    /// Create a new instance.
     /// </summary>
     /// <param name="info">
-    /// The serialization info.
+    /// The serialization information.
     /// </param>
     /// <param name="context">
     /// The streaming context.
     /// </param>
-    protected GLException(SerializationInfo info, StreamingContext context) : base(info, context) =>
-        ErrorCode = (ErrorCode)(info.GetValue("ErrorCode", typeof(ErrorCode)) ?? throw new ArgumentNullException(nameof(info), "SerializationInfo does not contain a value for ErrorCode"));
+    protected GLOperationException(SerializationInfo info, StreamingContext context) : base(info, context) =>
+        ErrorCode = (ErrorCode?)info.GetValue(nameof(ErrorCode), typeof(ErrorCode)) ?? throw new ArgumentNullException(nameof(info), $"SerializationInfo did not contain a value for field {nameof(ErrorCode)}");
 
     #endregion
 
     #region Public Methods
 
     /// <summary>
-    /// Serialize the exception.
+    /// Get the object data.
     /// </summary>
     /// <param name="info">
-    /// The serialization info.
+    /// The serialization information.
     /// </param>
     /// <param name="context">
     /// The streaming context.
     /// </param>
     public override void GetObjectData(SerializationInfo info, StreamingContext context) {
-        info.AddValue("ErrorCode", ErrorCode, typeof(ErrorCode));
+        info.AddValue(nameof(ErrorCode), ErrorCode, typeof(ErrorCode));
         base.GetObjectData(info, context);
     }
 
