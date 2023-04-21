@@ -96,7 +96,7 @@ public class GLBuffer : IDisposable {
         Target = target;
         ID = Context.GenBuffer();
         if (ID == 0) {
-            throw new GLCreateFailedException(nameof(GLBuffer));
+            throw new GLCreateFailedException(GLObjectType.Buffer);
         }
     }
 
