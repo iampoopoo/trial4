@@ -1,7 +1,5 @@
 namespace Glekcraft.Graphics.Primitives;
 
-using System.Collections.Generic;
-
 using Silk.NET.OpenGL;
 
 using Glekcraft.Graphics.Primitives.Exceptions;
