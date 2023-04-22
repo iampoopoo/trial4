@@ -86,8 +86,16 @@ public class GLShaderProgram : GLObject {
     /// <param name="context">
     /// The OpenGL rendering context this instance will belong to.
     /// </param>
-    public GLShaderProgram(GL context) : base(context) =>
+    /// <exception cref="GLObjectCreationFailedException">
+    /// Thrown if the OpenGL object could not be created.
+    /// </exception>
+    public GLShaderProgram(GL context) : base(context) {
+        ID = Context.CreateProgram();
+        if (!IsValid) {
+            throw new GLObjectCreationFailedException(GLType, (ErrorCode)Context.GetError());
+        }
         attachedShaders = new List<GLShader>();
+    }
 
     #endregion
 
