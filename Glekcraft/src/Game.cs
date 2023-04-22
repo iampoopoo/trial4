@@ -9,6 +9,8 @@ using Silk.NET.Input;
 using Silk.NET.OpenGL;
 using Silk.NET.Windowing;
 
+using Glekcraft.Graphics.Primitives;
+
 /// <summary>
 /// The main game state/logic controller.
 /// </summary>
@@ -17,15 +19,15 @@ public class Game : IDisposable {
 
     private uint vao;
 
-    private OpenGL.Buffer? vbo;
+    private GLBuffer? vbo;
 
-    private OpenGL.Buffer? cbo;
+    private GLBuffer? cbo;
 
-    private OpenGL.Buffer? uvbo;
+    private GLBuffer? uvbo;
 
-    private OpenGL.Buffer? ebo;
+    private GLBuffer? ebo;
 
-    private OpenGL.ShaderProgram? shader;
+    private GLShaderProgram? shader;
 
     private uint texture;
 
@@ -155,37 +157,43 @@ public class Game : IDisposable {
         }
         MainWindowGraphics.BindVertexArray(vao);
 
-        vbo = new OpenGL.Buffer(MainWindowGraphics, BufferTargetARB.ArrayBuffer);
-        _ = vbo.Bind().UploadData(new float[] {
+        vbo = new GLBuffer(MainWindowGraphics, BufferTargetARB.ArrayBuffer);
+        vbo.Bind();
+        vbo.UploadData(new float[] {
             -0.5f, -0.5f, 0.0f,
             0.5f, -0.5f, 0.0f,
             -0.5f, 0.5f, 0.0f,
             0.5f, 0.5f, 0.0f
         }, BufferUsageARB.StaticDraw);
 
-        cbo = new OpenGL.Buffer(MainWindowGraphics, BufferTargetARB.ArrayBuffer);
-        _ = cbo.Bind().UploadData(new float[] {
+        cbo = new GLBuffer(MainWindowGraphics, BufferTargetARB.ArrayBuffer);
+        cbo.Bind();
+        cbo.UploadData(new float[] {
             1.0f, 1.0f, 1.0f,
             1.0f, 1.0f, 1.0f,
             1.0f, 1.0f, 1.0f,
             1.0f, 1.0f, 1.0f
         }, BufferUsageARB.StaticDraw);
 
-        uvbo = new OpenGL.Buffer(MainWindowGraphics, BufferTargetARB.ArrayBuffer);
-        _ = uvbo.Bind().UploadData(new float[] {
+        uvbo = new GLBuffer(MainWindowGraphics, BufferTargetARB.ArrayBuffer);
+        uvbo.Bind();
+        uvbo.UploadData(new float[] {
             0.0f, 1.0f,
             1.0f, 1.0f,
             0.0f, 0.0f,
             1.0f, 0.0f
         }, BufferUsageARB.StaticDraw);
 
-        ebo = new OpenGL.Buffer(MainWindowGraphics, BufferTargetARB.ElementArrayBuffer);
-        _ = ebo.Bind().UploadData(new uint[] {
+        ebo = new GLBuffer(MainWindowGraphics, BufferTargetARB.ElementArrayBuffer);
+        ebo.Bind();
+        ebo.UploadData(new uint[] {
             0, 1, 2,
             1, 2, 3
         }, BufferUsageARB.StaticDraw);
 
-        shader = OpenGL.ShaderProgram.FromSources(MainWindowGraphics, @"
+        shader = new GLShaderProgram(MainWindowGraphics);
+        var vShader = new GLShader(MainWindowGraphics, ShaderType.VertexShader);
+        vShader.UploadSource(@"
 #version 410 core
 layout (location = 0) in vec3 aPosition;
 layout (location = 1) in vec3 aColor;
@@ -196,7 +204,9 @@ void main() {
     vColor = aColor;
     vUV = aUV;
     gl_Position = vec4(aPosition, 1.0);
-}", @"
+}");
+        var fShader = new GLShader(MainWindowGraphics, ShaderType.FragmentShader);
+        fShader.UploadSource(@"
 #version 410 core
 in vec3 vColor;
 in vec2 vUV;
@@ -207,6 +217,9 @@ void main() {
     vec4 fColor = vec4(vColor, 1.0);
     fragColor = tColor * fColor;
 }");
+        shader.AttachShader(vShader);
+        shader.AttachShader(fShader);
+        shader.Link();
 
         var assemblyLocation = Path.GetDirectoryName(Path.GetFullPath(Assembly.GetExecutingAssembly().Location));
         if (assemblyLocation == null) {
@@ -280,7 +293,7 @@ void main() {
         MainWindowGraphics.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
         MainWindowGraphics.BindVertexArray(vao);
-        _ = shader?.Activate();
+        shader?.Activate();
         MainWindowGraphics.EnableVertexAttribArray(0);
         MainWindowGraphics.EnableVertexAttribArray(1);
         MainWindowGraphics.EnableVertexAttribArray(2);
@@ -296,12 +309,12 @@ void main() {
         MainWindowGraphics.VertexAttribFormat(2, 2, VertexAttribType.Float, false, 0);
         MainWindowGraphics.VertexAttribBinding(2, 2);
         MainWindowGraphics.BindVertexBuffer(2, uvbo?.ID ?? 0, 0, 2 * sizeof(float));
-        _ = ebo?.Bind();
+        ebo?.Bind();
         MainWindowGraphics.DrawElements(PrimitiveType.Triangles, 6, DrawElementsType.UnsignedInt, ReadOnlySpan<uint>.Empty);
         MainWindowGraphics.DisableVertexAttribArray(2);
         MainWindowGraphics.DisableVertexAttribArray(1);
         MainWindowGraphics.DisableVertexAttribArray(0);
-        _ = shader?.Deactivate();
+        shader?.Deactivate();
 
         MainWindow.SwapBuffers();
     }
