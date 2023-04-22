@@ -9,18 +9,14 @@ using Glekcraft.Graphics.Primitives.Exceptions;
 /// <summary>
 /// An OpenGL buffer resource.
 /// </summary>
-public class GLBuffer : IDisposable {
+public class GLBuffer : GLObject {
     #region Public Properties
 
     /// <summary>
-    /// The OpenGL rendering context that owns this instance.
+    /// The type of OpenGL object wrapped by this instance.
     /// </summary>
-    public GL Context { get; }
-
-    /// <summary>
-    /// The OpenGL ID of the wrapped resource.
-    /// </summary>
-    public uint ID { get; }
+    public override GLObjectType GLType =>
+        GLObjectType.Buffer;
 
     /// <summary>
     /// The target the instance will bind to.
@@ -63,20 +59,6 @@ public class GLBuffer : IDisposable {
         }
     }
 
-    /// <summary>
-    /// Whether this instance wraps a valid resource.
-    /// </summary>
-    public bool IsValid =>
-        !IsDisposed && ID != 0;
-
-    /// <summary>
-    /// Whether this instance has been disposed.
-    /// </summary>
-    public bool IsDisposed {
-        get;
-        private set;
-    }
-
     #endregion
 
     #region Constructors/Finalizer
@@ -93,13 +75,12 @@ public class GLBuffer : IDisposable {
     /// <exception cref="GLObjectCreationFailedException">
     /// Thrown if the OpenGL rendering context fails to create the resource.
     /// </exception>
-    public GLBuffer(GL context, BufferTargetARB target) {
-        Context = context;
-        Target = target;
+    public GLBuffer(GL context, BufferTargetARB target) : base(context) {
         ID = Context.GenBuffer();
         if (!IsValid) {
             throw new GLObjectCreationFailedException(GLObjectType.Buffer, (ErrorCode)Context.GetError());
         }
+        Target = target;
     }
 
     /// <summary>
@@ -376,33 +357,25 @@ public class GLBuffer : IDisposable {
         }
     }
 
-    /// <summary>
-    /// Dispose of this instance and its wrapped resource.
-    /// </summary>
-    public void Dispose() {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
-
     #endregion
 
-    #region Private Methods
+    #region Protected Methods
 
     /// <summary>
-    /// Dispose of this instance and its wrapped resource.
+    /// Dispose of this instance.
     /// </summary>
     /// <param name="managed">
     /// Whether this method is being called from managed code or from unmanaged
     /// code (e.g. the garbage collector).
     /// </param>
-    private void Dispose(bool managed) {
-        if (!IsValid) {
-            return;
-        }
-        if (managed) {
+    /// <seealso cref="IsDisposed" />
+    /// <seealso cref="IsValid" />
+    /// <seealso cref="Dispose" />
+    protected override void Dispose(bool managed) {
+        if (IsValid) {
             Context.DeleteBuffer(ID);
         }
-        IsDisposed = true;
+        base.Dispose(managed);
     }
 
     #endregion
