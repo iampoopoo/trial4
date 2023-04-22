@@ -7,6 +7,9 @@ using Silk.NET.OpenGL;
 
 using Glekcraft.Graphics.Primitives.Exceptions;
 
+/// <summary>
+/// An OpenGL shader resource.
+/// </summary>
 public class GLShader : GLObject {
     #region Public Properties
 
